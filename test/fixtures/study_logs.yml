@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  subject: MyString
+  study_time: MyString
+  integer: MyString
+  note: MyText
+
+two:
+  user: two
+  subject: MyString
+  study_time: MyString
+  integer: MyString
+  note: MyText
