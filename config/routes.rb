@@ -1,12 +1,4 @@
 Rails.application.routes.draw do
-<<<<<<< HEAD
-  get 'reports/index'
-  get 'reports/show'
-  get 'comments/create'
-  get 'comments/destroy'
-  get 'likes/create'
-  get 'likes/destroy'
-=======
   get 'friendships/create'
   get 'friendships/destroy'
   get 'study_logs/index'
@@ -22,7 +14,12 @@ Rails.application.routes.draw do
   get 'users/edit'
   get 'users/update'
   get 'users/destroy'
->>>>>>> model_and_controller
+  get 'reports/index'
+  get 'reports/show'
+  get 'comments/create'
+  get 'comments/destroy'
+  get 'likes/create'
+  get 'likes/destroy'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
