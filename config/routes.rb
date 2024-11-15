@@ -1,33 +1,17 @@
 Rails.application.routes.draw do
-  get 'reports/index'
-  get 'reports/show'
-  get 'comments/create'
-  get 'comments/destroy'
-  get 'likes/create'
-  get 'likes/destroy'
-  
-  get 'friendships/create'
-  get 'friendships/destroy'
-  get 'study_logs/index'
-  get 'study_logs/show'
-  get 'study_logs/new'
-  get 'study_logs/create'
-  get 'study_logs/edit'
-  get 'study_logs/update'
-  get 'study_logs/destroy'
-  get 'users/new'
-  get 'users/create'
-  get 'users/show'
-  get 'users/edit'
-  get 'users/update'
-  get 'users/destroy'
+  # 各リソースに必要なアクションを指定
+  resources :reports, only: [:index, :show]
+  resources :comments, only: [:create, :destroy]
+  resources :likes, only: [:create, :destroy]
+  resources :friendships, only: [:create, :destroy]
+  resources :study_logs # 全てのCRUD操作を含む
+  resources :users, only: [:new, :create, :show, :edit, :update, :destroy]
 
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  # トップページとログイン関連
+  root 'top#main'
+  post 'login', to: 'top#login', as: :login
+  delete 'logout', to: 'top#logout', as: :logout
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
-
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # ヘルスチェック用ルート
+  get "up", to: "rails/health#show", as: :rails_health_check
 end
