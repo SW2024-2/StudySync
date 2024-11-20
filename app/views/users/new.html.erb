@@ -1,3 +1,8 @@
+<% if flash[:notice] %>
+    <%= flash[:notice] %>
+<% end %>
+
+
 <h1>新規ユーザー登録</h1>
 
 <%= form_with model: @user, local: true do |f| %>
@@ -11,11 +16,11 @@
   </div>
   <div>
     <%= f.label :uid, "ID" %>
-    <%= f.email_field :uid %>
+    <%= f.text_field :uid %>
   </div>
   <div>
     <%= f.label :password_digest, "パスワード" %>
-    <%= f.password_field :password_digest %>
+    <%= f.text_field :password_digest %>
   </div>
   
   <div>

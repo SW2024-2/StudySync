@@ -9,8 +9,10 @@ Rails.application.routes.draw do
 
   # トップページとログイン関連
   root 'top#main'
-  post 'login', to: 'top#login', as: :login
+  get 'login', to: 'top#login_form', as: :login_form # ログイン画面表示用
+  post 'login', to: 'top#login', as: :login          # ログイン処理用
   delete 'logout', to: 'top#logout', as: :logout
+  get 'users/error'
 
   # ヘルスチェック用ルート
   get "up", to: "rails/health#show", as: :rails_health_check
