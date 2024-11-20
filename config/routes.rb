@@ -36,7 +36,6 @@ Rails.application.routes.draw do
   # トップページとログイン関連
   root 'top#main'
   get 'login', to: 'top#login_form', as: :login_form # ログイン画面表示用
-  get 'login', to: 'top#login_form', as: :login_form # ログイン画面表示用
   post 'login', to: 'top#login', as: :login          # ログイン処理用          
   delete 'logout', to: 'top#logout', as: :logout
   get 'users/error'
