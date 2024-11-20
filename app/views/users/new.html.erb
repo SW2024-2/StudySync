@@ -1,12 +1,26 @@
-<h2>新規登録</h2>
-<%= form_for @user , url: {action: :create} do |f| %>
-    <%= f.label :name, '名前' %>
+<h1>新規ユーザー登録</h1>
+
+<%= form_with model: @user, local: true do |f| %>
+  <div>
+    <%= f.label :name, "名前" %>
     <%= f.text_field :name %>
-    <%= f.label :email, 'メールアドレス' %>
-    <%= f.text_field :email %>
-    <%= f.label :uid, 'ユーザID' %>
-    <%= f.text_field :uid %>
-    <%= f.label :pass, 'パスワード' %>
-    <%= f.password_field :pass %>
-    <%= f.submit '登録' %>
+  </div>
+  <div>
+    <%= f.label :email, "メールアドレス" %>
+    <%= f.email_field :email %>
+  </div>
+  <div>
+    <%= f.label :uid, "ID" %>
+    <%= f.email_field :uid %>
+  </div>
+  <div>
+    <%= f.label :password_digest, "パスワード" %>
+    <%= f.password_field :password_digest %>
+  </div>
+  
+  <div>
+    <%= f.submit "登録" %>
+  </div>
 <% end %>
+
+<%= link_to 'ログイン画面に戻る', login_path %>
