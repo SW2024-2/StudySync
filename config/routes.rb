@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   get 'friendships/create'
   get 'friendships/destroy'
   get 'study_logs/index'
+  resources :study_logs, only: [:index, :new, :create, :edit, :update, :destroy]
+  resources :friendships, only: [:index, :create, :destroy]
+  resources :reports, only: [:index, :show]
+  
   get 'study_logs/show'
   get 'study_logs/new'
   get 'study_logs/create'
