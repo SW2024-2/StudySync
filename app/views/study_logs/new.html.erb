@@ -1,22 +1,24 @@
-<h1>登録を入力</h1>
+<h1>記録を入力</h1>
 
 <%= form_with model: @study_log, local: true do |f| %>
   <div>
-    <%= f.label :name, "科目名" %>
-    <%= f.text_field :name %>
+    <%= f.label :subject, "科目名" %>
+    <%= f.text_field :subject %>
   </div>
+
   <div>
-    <%= f.label :email, "学習時間" %>
-    <%= f.email_field :email %>
+    <%= f.label :study_time, "学習時間（分）" %>
+    <%= f.number_field :study_time %>
   </div>
+
   <div>
-    <%= f.label :uid, "学習内容" %>
-    <%= f.text_field :uid %>
+    <%= f.label :note, "学習内容" %>
+    <%= f.text_area :note %> 
   </div>
-  
+
   <div>
     <%= f.submit "記録する" %>
   </div>
 <% end %>
 
-<%= link_to 'TOP画面に戻る', login_path %>
+<%= link_to 'TOP画面に戻る', study_logs_path %>

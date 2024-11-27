@@ -66,4 +66,3 @@ end
     params.require(:user).permit(:name, :email, :uid, :password, :password_confirmation)
   end
 end
-
