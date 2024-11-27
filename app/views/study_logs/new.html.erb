@@ -1,2 +1,22 @@
-<h1>StudyLogs#new</h1>
-<p>Find me in app/views/study_logs/new.html.erb</p>
+<h1>登録を入力</h1>
+
+<%= form_with model: @study_log, local: true do |f| %>
+  <div>
+    <%= f.label :name, "科目名" %>
+    <%= f.text_field :name %>
+  </div>
+  <div>
+    <%= f.label :email, "学習時間" %>
+    <%= f.email_field :email %>
+  </div>
+  <div>
+    <%= f.label :uid, "学習内容" %>
+    <%= f.text_field :uid %>
+  </div>
+  
+  <div>
+    <%= f.submit "記録する" %>
+  </div>
+<% end %>
+
+<%= link_to 'TOP画面に戻る', login_path %>
