@@ -16,16 +16,7 @@
 
 /* app/assets/stylesheets/application.css */
 
-/*
- *= require study_logs
+/* 
+ *= require study_logs 
+ *= require new_addition 
  */
-<<<<<<< HEAD
-/*
- *= require new_addition
- */
-=======
- 
-/*
- *= require new_addition
- */
->>>>>>> fix_login
