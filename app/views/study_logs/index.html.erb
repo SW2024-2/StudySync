@@ -9,6 +9,13 @@
 </head>
 <body>
 
+  <!-- フラッシュメッセージ表示 -->
+  <% if flash[:alert] %>
+    <div class="alert">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+
   <!-- home画面 -->
   <div class="study-logs">
     <% @study_logs.each do |study_log| %>
