@@ -24,7 +24,7 @@ class TopController < ApplicationController
       redirect_to study_logs_path, notice: "ログインに成功しました。"
     else
       flash.now[:alert] = "ユーザーIDまたはパスワードが間違っています。"
-      render :login, status: :unprocessable_entity # ログインフォームに戻す
+      render :error, status: :unprocessable_entity # ログインフォームに戻す
     end
   end
 

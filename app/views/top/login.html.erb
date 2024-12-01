@@ -10,10 +10,25 @@
   </div>
   <div>
     <%= label_tag :password_digest, "パスワード" %>
-    <%= password_field_tag :password_digest %>
+    <%= password_field_tag :password_digest, nil, id: 'password_field' %>
+    <button type="button" id="toggle-password">パスワードを表示</button>
   </div>
   <div>
     <%= submit_tag "ログイン" %>
   </div>
 <% end %>
+
 <%= link_to '新規登録はこちら', new_user_path %>
+
+<script>
+  document.getElementById('toggle-password').addEventListener('click', function() {
+    var passwordField = document.getElementById('password_field');
+    if (passwordField.type === 'password') {
+      passwordField.type = 'text'; // パスワードを表示
+      this.innerText = 'パスワードを隠す'; // ボタンのテキストを変更
+    } else {
+      passwordField.type = 'password'; // パスワードを隠す
+      this.innerText = 'パスワードを表示'; // ボタンのテキストを変更
+    }
+  });
+</script>
