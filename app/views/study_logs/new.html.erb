@@ -1,24 +1,28 @@
-<h1>記録を入力</h1>
+<% if @study_log.errors.any? %>
+  <div class="error-messages">
+    <h2>エラーが発生しました:</h2>
+    <ul>
+      <% @study_log.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
 
 <%= form_with model: @study_log, local: true do |f| %>
   <div>
-    <%= f.label :subject, "科目名" %>
+    <%= f.label :subject, "科目" %>
     <%= f.text_field :subject %>
   </div>
-
   <div>
-    <%= f.label :study_time, "学習時間（分）" %>
+    <%= f.label :study_time, "学習時間(分)" %>
     <%= f.number_field :study_time %>
   </div>
-
   <div>
-    <%= f.label :note, "学習内容" %>
-    <%= f.text_area :note %> 
+    <%= f.label :note, "メモ" %>
+    <%= f.text_area :note %>
   </div>
-
   <div>
     <%= f.submit "記録する" %>
   </div>
 <% end %>
-
-<%= link_to 'TOP画面に戻る', root_path %>

@@ -6,30 +6,36 @@ class UsersController < ApplicationController
 
   # create: フォームから送信されたデータを基にユーザーを作成するアクション
   def create
-  # パスワードをハッシュ化
-  user_pass = BCrypt::Password.create(params[:user][:password])
-
-  if User.exists?(uid: params[:user][:uid])
-    flash[:alert] = "指定されたユーザーIDは既に存在しています。"
-    redirect_to new_user_path
-  else
-    user = User.new(
-      uid: params[:user][:uid],
-      name: params[:user][:name],
-      email: params[:user][:email],
-      password_digest: user_pass # パスワードのハッシュを保存
-    )
-
-    if user.save
-      redirect_to root_path, notice: "登録が完了しました。" # 登録後、トップページにリダイレクト
-    else
-      flash.now[:alert] = "登録に失敗しました。入力内容を確認してください。"
+    # パスワードと確認用パスワードが一致するかチェック
+    if params[:user][:password] != params[:user][:password_confirmation]
+      flash[:alert] = "パスワードと確認用パスワードが一致しません。"
       render :new, status: :unprocessable_entity
+      return
+    end
+
+    # ユーザーIDがすでに存在するかチェック
+    if User.exists?(uid: params[:user][:uid])
+      flash[:alert] = "指定されたユーザーIDは既に存在しています。"
+      redirect_to new_user_path
+    else
+      # パスワードをハッシュ化してユーザーを作成
+      user_pass = BCrypt::Password.create(params[:user][:password])
+
+      user = User.new(
+        uid: params[:user][:uid],
+        name: params[:user][:name],
+        email: params[:user][:email],
+        password_digest: user_pass # パスワードのハッシュを保存
+      )
+
+      if user.save
+        redirect_to root_path, notice: "登録が完了しました。" # 登録後、トップページにリダイレクト
+      else
+        flash.now[:alert] = "登録に失敗しました。入力内容を確認してください。"
+        render :new, status: :unprocessable_entity
+      end
     end
   end
-end
-
-
 
   # show: ユーザーのプロフィールページを表示するアクション
   def show
@@ -44,6 +50,12 @@ end
   # update: ユーザー情報を更新するアクション
   def update
     @user = User.find(params[:id])
+
+    # パスワードを更新する場合、password_digestを更新する
+    if params[:user][:password].present?
+      @user.password_digest = BCrypt::Password.create(params[:user][:password])
+    end
+
     if @user.update(user_params)
       redirect_to @user, notice: "ユーザー情報が更新されました。"
     else
@@ -59,7 +71,7 @@ end
     redirect_to root_path, notice: "ユーザーが削除されました。"
   end
 
- private
+  private
 
   # ストロングパラメータ
   def user_params

@@ -1,6 +1,11 @@
 class StudyLogsController < ApplicationController
   def index
-    @study_logs = StudyLog.includes(:user).order(created_at: :desc) # 学習ログを作成日時順で取得
+    if session[:login_uid]
+      @study_logs = StudyLog.includes(:user).order(created_at: :desc)
+      render "study_logs/index"
+    else
+      render "top/login"
+    end
   end
 
   def show
@@ -11,7 +16,24 @@ class StudyLogsController < ApplicationController
   end
 
   def create
+    # ログインしていない場合は、ログインページにリダイレクト
+    if session[:login_uid].nil?
+      flash[:alert] = "ログインが必要です。"
+      redirect_to login_form_path
+      return
+    end
+
     @study_log = StudyLog.new(study_log_params)
+    
+    # ユーザーIDを設定
+    @study_log.user = User.find_by(id: session[:login_uid])
+
+    if @study_log.user.nil?
+      flash[:alert] = "ユーザーが見つかりません。ログインし直してください。"
+      redirect_to login_form_path
+      return
+    end
+
     if @study_log.save
       redirect_to study_logs_path, notice: '学習記録が作成されました'
     else
@@ -27,8 +49,8 @@ class StudyLogsController < ApplicationController
 
   def destroy
   end
-  
-    private
+
+  private
 
   def study_log_params
     params.require(:study_log).permit(:subject, :study_time, :note)
