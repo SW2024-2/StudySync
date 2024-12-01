@@ -1,7 +1,10 @@
-<% if flash[:notice] %>
-    <%= flash[:notice] %>
-<% end %>
+<%= stylesheet_link_tag 'new_addition', media: 'all' %>
 
+<% if flash[:notice] %>
+  <div class="notice">
+    <%= flash[:notice] %>
+  </div>
+<% end %>
 
 <h1>新規ユーザー登録</h1>
 
@@ -20,7 +23,7 @@
   </div>
   <div>
     <%= f.label :password_digest, "パスワード" %>
-    <%= f.text_field :password_digest %>
+    <%= f.password_field :password_digest %> <!-- パスワードはpassword_fieldに変更 -->
   </div>
   
   <div>
