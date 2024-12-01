@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   # リソース関連
   resources :users, only: [:new, :create, :show, :edit, :update, :destroy]
-  resources :study_logs, only: [:index, :new, :create, :edit, :update, :destroy, :show]
+  resources :study_logs
   resources :reports, only: [:index, :show]
   resources :comments, only: [:create, :destroy]
   resources :likes, only: [:create, :destroy]
