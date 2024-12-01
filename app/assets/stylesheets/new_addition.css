@@ -1,0 +1,138 @@
+/* ログイン画面、新規会員登録画面、学習記録登録画面にのみ適用 */
+#login-page form,
+#signup-page form,
+#learning-record-page form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 20px;
+  max-width: 600px;
+  margin: 0 auto; /* 中央揃え */
+}
+
+#login-page form div,
+#signup-page form div,
+#learning-record-page form div {
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+#login-page form label,
+#signup-page form label,
+#learning-record-page form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#login-page form input[type="text"],
+#signup-page form input[type="text"],
+#learning-record-page form input[type="text"],
+#login-page form input[type="email"],
+#signup-page form input[type="email"],
+#learning-record-page form input[type="email"],
+#login-page form input[type="password"],
+#signup-page form input[type="password"],
+#learning-record-page form input[type="password"] {
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 80%;
+  box-sizing: border-box; /* 内側の余白も幅に含める */
+}
+
+#login-page form input[type="submit"],
+#signup-page form input[type="submit"],
+#learning-record-page form input[type="submit"] {
+  padding: 10px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 20%;
+}
+
+#login-page form input[type="submit"]:hover,
+#signup-page form input[type="submit"]:hover,
+#learning-record-page form input[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+#login-page h1,
+#signup-page h1,
+#learning-record-page h1 {
+  text-align: left;
+  margin-bottom: 20px;
+  width: 100%;
+  margin-left: 20px;
+}
+
+#login-page a,
+#signup-page a,
+#learning-record-page a {
+  text-align: left;
+  display: block;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+#login-page .notice,
+#signup-page .notice,
+#learning-record-page .notice {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #f0f8ff;
+  border: 1px solid #b0c4de;
+  border-radius: 5px;
+  font-size: 1.1em;
+}
+
+/* メモのテキストエリアのスタイル */
+form textarea {
+  width: 100%; /* 幅を親要素に合わせて100%に設定 */
+  height: 150px; /* 高さを150pxに設定（任意で変更） */
+  padding: 8px; /* 内側の余白 */
+  border: 1px solid #ccc; /* 枠線 */
+  border-radius: 4px; /* 角を丸くする */
+}
+
+/* パスワード入力とボタンを横並びに */
+.password-container {
+  display: flex; /* 横並びにする */
+  flex-direction: column; /* 縦に並べる（ラベルと入力欄を縦に） */
+  width: 100%;
+  margin-bottom: 15px; /* 下に余白を追加 */
+}
+
+.password-container label {
+  margin-bottom: 5px; /* ラベルとフィールドの間に余白 */
+}
+
+.password-input-wrapper {
+  display: flex; /* 横並びにする */
+  align-items: center; /* 高さを揃える */
+  width: 100%; /* 幅を100%に設定 */
+}
+
+.password-input-wrapper input {
+  padding: 8px;
+  height: 40px; /* 高さを設定（パスワードフィールドの高さ） */
+  margin-right: 10px; /* 入力フィールドとボタンの間にスペース */
+  width: 100%; /* 幅を100%に設定（ボタンを除く） */
+  box-sizing: border-box; /* 内側の余白も幅に含める */
+}
+
+.toggle-password {
+  display: inline-block; /* ボタンをインラインブロックで横並び */
+  cursor: pointer; /* カーソルをポインターに */
+  padding: 0 15px; /* ボタンの左右の内側余白を調整 */
+  background-color: #f0f0f0; /* 背景色を追加 */
+  border: 1px solid #ccc; /* 枠線 */
+  border-radius: 4px; /* 角を丸くする */
+  height: 40px; /* テキストフィールドと同じ高さに設定 */
+  line-height: 40px; /* テキスト垂直方向に中央揃え */
+  text-align: center; /* ボタンのテキストを中央揃え */
+  white-space: nowrap; /* テキストが改行しないようにする */
+  box-sizing: border-box; /* ボタンの内側の余白も含める */
+}

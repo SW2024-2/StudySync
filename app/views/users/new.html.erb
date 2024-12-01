@@ -3,30 +3,45 @@
     <%= flash[:notice] %>
   </div>
 <% end %>
-
-<h1>新規ユーザー登録</h1>
-
-<%= form_with model: @user, local: true do |f| %>
-  <div>
-    <%= f.label :name, "名前" %>
-    <%= f.text_field :name %>
-  </div>
-  <div>
-    <%= f.label :email, "メールアドレス" %>
-    <%= f.email_field :email %>
-  </div>
-  <div>
-    <%= f.label :uid, "ID" %>
-    <%= f.text_field :uid %>
-  </div>
-  <div>
-    <%= f.label :password_digest, "パスワード" %>
-    <%= f.password_field :password_digest %> <!-- パスワードはpassword_fieldに変更 -->
-  </div>
+<body id="signup-page">
+  <h1>新規ユーザー登録</h1>
   
-  <div>
-    <%= f.submit "登録" %>
-  </div>
-<% end %>
-
-<%= link_to 'ログイン画面に戻る', login_path %>
+  <%= form_with model: @user, local: true do |f| %>
+    <div>
+      <%= f.label :name, "名前" %>
+      <%= f.text_field :name %>
+    </div>
+    <div>
+      <%= f.label :email, "メールアドレス" %>
+      <%= f.email_field :email %>
+    </div>
+    <div>
+      <%= f.label :uid, "ID" %>
+      <%= f.text_field :uid %>
+    </div>
+    <div class="password-container">
+      <%= label_tag :password_digest, "パスワード" %>
+      <div class="password-input-wrapper">
+        <%= password_field_tag :password_digest, nil, id: 'password_field' %>
+        <button type="button" id="toggle-password" class="toggle-password">パスワードを表示</button>
+      </div>
+    </div>
+    <div>
+      <%= f.submit "登録" %>
+    </div>
+  <% end %>
+  
+  <%= link_to 'ログイン画面に戻る', login_path %>
+    <script>
+    document.getElementById('toggle-password').addEventListener('click', function() {
+      var passwordField = document.getElementById('password_field');
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text'; // パスワードを表示
+        this.innerText = 'パスワードを隠す'; // ボタンのテキストを変更
+      } else {
+        passwordField.type = 'password'; // パスワードを隠す
+        this.innerText = 'パスワードを表示'; // ボタンのテキストを変更
+      }
+    });
+  </script>
+</body>
