@@ -1,0 +1,13 @@
+/* action-linksを横並びにする */
+.action-links {
+  display: flex; /* 要素を横並びに */
+  gap: 10px; /* 要素間のスペースを調整 */
+  align-items: center; /* 垂直方向に中央揃え */
+}
+
+/* form_tag内のフォームを横並びにする */
+.delete-form {
+  display: inline-block; /* フォームを横並びにする */
+}
+
+
