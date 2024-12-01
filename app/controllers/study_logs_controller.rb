@@ -9,14 +9,18 @@ class StudyLogsController < ApplicationController
   end
 
   def show
+    @study_log = StudyLog.find(params[:id])  # :idを使って対象の学習記録を取得
+  rescue ActiveRecord::RecordNotFound
+    flash[:alert] = "学習記録が見つかりません。"
+    redirect_to study_logs_path  # 存在しないIDの場合は、一覧ページにリダイレクト
   end
+
 
   def new
     @study_log = StudyLog.new
   end
 
   def create
-    # ログインしていない場合は、ログインページにリダイレクト
     if session[:login_uid].nil?
       flash[:alert] = "ログインが必要です。"
       redirect_to login_form_path
@@ -24,8 +28,6 @@ class StudyLogsController < ApplicationController
     end
 
     @study_log = StudyLog.new(study_log_params)
-    
-    # ユーザーIDを設定
     @study_log.user = User.find_by(id: session[:login_uid])
 
     if @study_log.user.nil?
@@ -35,20 +37,38 @@ class StudyLogsController < ApplicationController
     end
 
     if @study_log.save
-      redirect_to study_logs_path, notice: '学習記録が作成されました'
+      redirect_to root_path, notice: '学習記録が作成されました'
     else
       render :new
     end
   end
 
   def edit
+    @study_log = StudyLog.find(params[:id])
   end
 
   def update
+    @study_log = StudyLog.find(params[:id])
+
+    if @study_log.update(study_log_params)
+      redirect_to root_path, notice: "学習記録が更新されました。"
+    else
+      flash.now[:alert] = "更新に失敗しました。入力内容を確認してください。"
+      render :edit
+    end
   end
 
   def destroy
+    @study_log = StudyLog.find_by(id: params[:id])  # find_byを使ってnilの場合の処理を追加
+    if @study_log
+      @study_log.destroy
+      flash[:notice] = "学習記録が削除されました。"
+    else
+      flash[:alert] = "学習記録が見つかりません。"
+    end
+    redirect_to root_path  # TOP画面にリダイレクト
   end
+
 
   private
 

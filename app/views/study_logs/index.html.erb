@@ -10,7 +10,6 @@
           <%= link_to '削除', study_log_path(study_log), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-link' %>
           <%= link_to '編集', edit_study_log_path(study_log), class: 'edit-link' %>
         </div>
-      </div>
       <!-- 本文部分 -->
       <div class="study-log-body">
         <h3 class="subject"><%= study_log.subject %></h3>

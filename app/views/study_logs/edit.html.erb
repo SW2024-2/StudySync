@@ -1,2 +1,35 @@
-<h1>StudyLogs#edit</h1>
-<p>Find me in app/views/study_logs/edit.html.erb</p>
+<h1>学習記録の編集</h1>
+
+<%= form_with(model: @study_log, local: true) do |form| %>
+  <% if @study_log.errors.any? %>
+    <div class="error-messages">
+      <h2>エラーが発生しました:</h2>
+      <ul>
+        <% @study_log.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :subject, "科目" %>
+    <%= form.text_field :subject %>
+  </div>
+
+  <div>
+    <%= form.label :study_time, "学習時間" %>
+    <%= form.number_field :study_time %>
+  </div>
+
+  <div>
+    <%= form.label :note, "ノート" %>
+    <%= form.text_area :note %>
+  </div>
+
+  <div>
+    <%= form.submit "更新する" %>
+  </div>
+<% end %>
+
+<%= link_to 'キャンセル', study_logs_path %>

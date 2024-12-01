@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  # トップページとログイン関連
-  root 'top#main'
+  # トップページを study_logs#index に設定
+  root 'study_logs#index'
 
   # ログイン関連
   get 'login', to: 'top#login_form', as: :login_form
@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   # リソース関連
   resources :users, only: [:new, :create, :show, :edit, :update, :destroy]
-  resources :study_logs, only: [:index, :new, :create, :edit, :update, :destroy]
+  resources :study_logs, only: [:index, :new, :create, :edit, :update, :destroy, :show]
   resources :reports, only: [:index, :show]
   resources :comments, only: [:create, :destroy]
   resources :likes, only: [:create, :destroy]
