@@ -1,2 +1,21 @@
-<h1>Reports#index</h1>
-<p>Find me in app/views/reports/index.html.erb</p>
+<h1>学習レポート</h1>
+
+<h2>今日の学習時間</h2>
+<% @todays_study_time.each do |subject, time| %>
+  <p><%= subject %>: <%= time %> 分</p>
+<% end %>
+
+<h2>今週の学習時間</h2>
+<% @this_weeks_study_time.each do |subject, time| %>
+  <p><%= subject %>: <%= time %> 分</p>
+<% end %>
+
+<h2>今月の学習時間</h2>
+<% @this_months_study_time.each do |subject, time| %>
+  <p><%= subject %>: <%= time %> 分</p>
+<% end %>
+
+<h2>合計学習時間</h2>
+<% @total_study_time.each do |subject, time| %>
+  <p><%= subject %>: <%= time %> 分</p>
+<% end %>
