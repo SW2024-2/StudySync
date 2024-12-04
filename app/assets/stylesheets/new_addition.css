@@ -1,7 +1,8 @@
-/* ログイン画面、新規会員登録画面、学習記録登録画面にのみ適用 */
+/* ログイン画面、新規会員登録画面、学習記録登録画面・学習記録編集画面にのみ適用 */
 #login-page form,
 #signup-page form,
-#learning-record-page form {
+#learning-record-page form,
+#edit-page form{
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -12,14 +13,16 @@
 
 #login-page form div,
 #signup-page form div,
-#learning-record-page form div {
+#learning-record-page form div,
+#edit-page form div{
   margin-bottom: 15px;
   width: 100%;
 }
 
 #login-page form label,
 #signup-page form label,
-#learning-record-page form label {
+#learning-record-page form label,
+#edit-page form label{
   display: block;
   margin-bottom: 5px;
 }
@@ -29,10 +32,8 @@
 #learning-record-page form input[type="text"],
 #login-page form input[type="email"],
 #signup-page form input[type="email"],
-#learning-record-page form input[type="email"],
 #login-page form input[type="password"],
-#signup-page form input[type="password"],
-#learning-record-page form input[type="password"] {
+#signup-page form input[type="password"]{
   padding: 8px;
   margin-top: 5px;
   border: 1px solid #ccc;
@@ -43,7 +44,8 @@
 
 #login-page form input[type="submit"],
 #signup-page form input[type="submit"],
-#learning-record-page form input[type="submit"] {
+#learning-record-page form input[type="submit"],
+#edit-page form input[type="submit"]{
   padding: 10px 15px;
   background-color: #4CAF50;
   color: white;
@@ -55,13 +57,15 @@
 
 #login-page form input[type="submit"]:hover,
 #signup-page form input[type="submit"]:hover,
-#learning-record-page form input[type="submit"]:hover {
+#learning-record-page form input[type="submit"]:hover,
+#edit-page form input[type="submit"]:hover{
   background-color: #45a049;
 }
 
 #login-page h1,
 #signup-page h1,
-#learning-record-page h1 {
+#learning-record-page h1,
+#edit-page h1{
   text-align: left;
   margin-bottom: 20px;
   width: 100%;
@@ -70,7 +74,8 @@
 
 #login-page a,
 #signup-page a,
-#learning-record-page a {
+#learning-record-page a,
+#edit-page a {
   text-align: left;
   display: block;
   margin-top: 20px;
@@ -79,7 +84,8 @@
 
 #login-page .notice,
 #signup-page .notice,
-#learning-record-page .notice {
+#learning-record-page .notice,
+#edit-page .notice{
   margin-bottom: 15px;
   padding: 10px;
   background-color: #f0f8ff;
