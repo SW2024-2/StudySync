@@ -22,10 +22,8 @@ class StudyLog < ApplicationRecord
       .sum(:study_time)
   end
 
-  # 合計学習時間を教科ごとに取得
+  # 合計学習時間（教科関係なし）
   def self.total_study_time(user)
-    where(user: user)
-      .group(:subject)
-      .sum(:study_time)
+    where(user: user).sum(:study_time)  # 全体の学習時間の合計
   end
 end
