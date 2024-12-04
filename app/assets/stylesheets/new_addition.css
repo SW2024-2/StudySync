@@ -1,4 +1,4 @@
-/* ログイン画面、新規会員登録画面、学習記録登録画面・学習記録編集画面にのみ適用 */
+/* ログイン画面、新規会員登録画面、学習記録登録画面・学習記録編集画面・レポートにのみ適用 */
 #login-page form,
 #signup-page form,
 #learning-record-page form,
@@ -65,7 +65,8 @@
 #login-page h1,
 #signup-page h1,
 #learning-record-page h1,
-#edit-page h1{
+#edit-page h1,
+#report-page h1{
   text-align: left;
   margin-bottom: 20px;
   width: 100%;
