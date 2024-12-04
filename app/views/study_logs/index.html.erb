@@ -1,59 +1,67 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study Log</title>
-  <!-- CSSの読み込み -->
-  <link rel="stylesheet" href="/assets/application.css" />
-</head>
-<body>
-
-  <!-- フラッシュメッセージ表示 -->
-  <% if flash[:alert] %>
-    <div class="alert">
-      <%= flash[:alert] %>
-    </div>
-  <% end %>
-
-  <!-- home画面 -->
-  <div class="study-logs">
-    <% @study_logs.each do |study_log| %>
-      <div class="study-log">
-        <!-- ヘッダー部分 -->
-        <div class="study-log-header">
-          <span class="user-name"><%= study_log.user.name %></span>
-          <span class="timestamp"><%= time_ago_in_words(study_log.created_at) %>前</span>
-          <div class="action-links">
-            <%= form_tag study_log_path(study_log), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-form' do %>
-              <%= link_to '削除', '#', class: 'delete-link', onclick: 'this.closest("form").submit(); return false;' %>
-            <% end %>
-            <%= link_to '編集', edit_study_log_path(study_log), class: 'edit-link' %>
-          </div>
-        </div>
-        <!-- 本文部分 -->
-        <div class="study-log-body">
-          <h3 class="subject"><%= study_log.subject %></h3>
-          <h3 class="study-time"><%= study_log.study_time %>分</h3>
-        </div>
-        <!-- フッター部分 -->
-        <div class="study-log-footer">
-          <a href="#" class="comment-link">コメント</a>
-          <a href="#" class="like-icon" data-linked="false">👍 いいね</a>
+<!-- home画面 -->
+<div class="study-logs">
+  <!-- 全ユーザー表示 -->
+  <% @study_logs.each do |study_log| %>
+    <div class="study-log">
+      <!-- ヘッダー部分 -->
+      <div class="study-log-header">
+        <span class="user-name"><%= study_log.user.name %></span>
+        <span class="timestamp"><%= time_ago_in_words(study_log.created_at) %>前</span>
+        <div class="action-links">
+          <%= link_to '削除', study_log_path(study_log), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-link' %>
+          <%= link_to '編集', edit_study_log_path(study_log), class: 'edit-link' %>
         </div>
       </div>
-    <% end %>
-  </div>
+      <!-- 本文部分 -->
+      <div class="study-log-body">
+        <h3 class="subject"><%= study_log.subject %></h3>
+        <h3 class="study-time"><%= study_log.study_time %>分</h3>
+      </div>
+      <!-- フッター部分 -->
+      <div class="study-log-footer">
+        <!--<a href="#" class="comment-link">💬コメント</a>-->
+        <%= link_to '💬コメント', comments_path, class: 'comment-link' %>
+        <a href="#" class="like-icon" data-linked="false">👍 いいね</a>
+      </div>
+      
+    </div>
+  <% end %>
+</div>
 
-  <!-- フッターのメニュー -->
-  <div class="footer-menu">
-    <%= link_to '記録する', new_study_log_path, class: 'footer-link' %>
-    <%= link_to 'レポートを見る', reports_path, class: 'footer-link' %>
-    <%= link_to 'フレンド一覧', friendships_path, class: 'footer-link' %>
-    <%= link_to "ログアウト", logout_path, class: 'footer-link' %>
-  </div>
+<!--<div class="study-logs">-->
+  <!-- フレンドだけの表示 -->
+<!--  <% @フレンドにあたる部分.each do |study_log| %>-->
+<!--    <div class="study-log">-->
+      <!-- ヘッダー部分 -->
+<!--      <div class="study-log-header">-->
+<!--        <span class="user-name"><%= study_log.user.name %></span>-->
+<!--        <span class="timestamp"><%= time_ago_in_words(study_log.created_at) %>前</span>-->
+<!--        <div class="action-links">-->
+<!--          <%= link_to '削除', study_log_path(study_log), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-link' %>-->
+<!--          <%= link_to '編集', edit_study_log_path(study_log), class: 'edit-link' %>-->
+<!--        </div>-->
+<!--      </div>-->
+      <!-- 本文部分 -->
+<!--      <div class="study-log-body">-->
+<!--        <h3 class="subject"><%= study_log.subject %></h3>-->
+<!--        <h3 class="study-time"><%= study_log.study_time %>分</h3>-->
+<!--      </div>-->
+      <!-- フッター部分 -->
+<!--      <div class="study-log-footer">-->
+        <!--<a href="#" class="comment-link">💬コメント</a>-->
+<!--        <%= link_to '💬コメント', comments_path, class: 'comment-link' %>-->
+<!--        <a href="#" class="like-icon" data-linked="false">👍 いいね</a>-->
+<!--      </div>-->
+      
+<!--    </div>-->
+<!--  <% end %>-->
+<!--</div>-->
 
-  <script src="script.js"></script>
+<!-- フッターのメニュー -->
+<div class="footer-menu">
+  <%= link_to '記録する', new_study_log_path, class: 'footer-link' %>
+  <%= link_to 'レポートを見る', reports_path, class: 'footer-link' %>
+  <%= link_to 'フレンド一覧', friendships_path, class: 'footer-link' %>
+</div>
 
-</body>
-</html>
+<script src="script.js"><script/>
