@@ -1,5 +1,5 @@
 class GoalsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!  # ログインしていない場合はログイン画面にリダイレクト
 
   def new
     @goal = Goal.new
@@ -7,42 +7,37 @@ class GoalsController < ApplicationController
 
   def create
     @goal = Goal.new(goal_params)
-    @goal.user = current_user  # 現在のユーザーに関連付ける
+    @goal.user = current_user  # current_user を使用してユーザーを設定
 
     if @goal.save
-      redirect_to reports_path, notice: "目標を設定しました"
+      redirect_to reports_path, notice: '目標が設定されました'
     else
       render :new
     end
   end
 
   def edit
-    @goal = current_user.goal
+    @goal = Goal.find(params[:id])
   end
 
   def update
-    @goal = current_user.goal
-
+    @goal = Goal.find(params[:id])
     if @goal.update(goal_params)
-      redirect_to reports_path, notice: "目標を更新しました"
+      redirect_to reports_path, notice: '目標が更新されました'
     else
       render :edit
     end
   end
-  
-  def current_user
-    User.find_by(id: session[:login_uid])  # session[:login_uid]がログインユーザーのIDである前提
+
+  def destroy
+    @goal = Goal.find(params[:id])
+    @goal.destroy
+    redirect_to reports_path, notice: '目標が削除されました。'
   end
 
   private
 
-  def authenticate_user!
-    if current_user.nil?
-      redirect_to login_path, alert: "ログインしてください"
-    end
-  end
-
   def goal_params
-    params.require(:goal).permit(:target_time)  # target_time: 目標時間
+    params.require(:goal).permit(:target_time)
   end
 end

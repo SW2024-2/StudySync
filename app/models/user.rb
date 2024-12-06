@@ -18,7 +18,7 @@ class User < ApplicationRecord
   has_many :reports
   
   # 目標を関連付ける
-  has_one :goal  
+  has_many :goals, dependent: :destroy
   
   # 必要に応じて、バリデーションや認証機能のための設定を追加可能
 end

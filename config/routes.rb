@@ -1,8 +1,4 @@
 Rails.application.routes.draw do
-  get 'goals/new'
-  get 'goals/create'
-  get 'goals/edit'
-  get 'goals/update'
   # トップページを study_logs#index に設定
   root 'study_logs#index'
 
@@ -11,18 +7,20 @@ Rails.application.routes.draw do
   post 'login', to: 'top#login', as: :login
   get 'logout', to: 'top#logout', as: :logout
 
+
   # ヘルスチェック用ルート
   get "up", to: "rails/health#show", as: :rails_health_check
 
   # リソース関連
   resources :users, only: [:new, :create, :show, :edit, :update, :destroy]
   resources :study_logs
-  resources :reports, only: [:index, :create]
+  resources :reports, only: [:index, :create, :destroy]
   resources :comments, only: [:create, :destroy]
   resources :likes, only: [:create, :destroy]
   resources :friendships, only: [:index, :create, :destroy]
-  resources :goals, only: [:new, :create, :edit, :update]  # Goalに関するルーティングを追加
+  resources :goals, only: [:new, :create, :edit, :update, :destroy]
 
+  
   # その他の個別ルート（不要）
   # 以下の個別ルートは削除できます
   # get 'study_logs/show'

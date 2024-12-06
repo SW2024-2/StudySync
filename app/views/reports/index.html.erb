@@ -1,4 +1,4 @@
-<div id="report-page">
+<body id="report-page">
   <h2>今日の学習時間</h2>
   <% if @todays_study_time.blank? %>
     <p class="no-study">まだ勉強をしていません</p>
@@ -28,6 +28,7 @@
     </ul>
   <% end %>
 
+  <!-- 今月の学習時間 -->
   <h2>今月の学習時間</h2>
   <% if @this_months_study_time.blank? %>
     <p class="no-study">まだ勉強をしていません</p>
@@ -50,9 +51,11 @@
 
   <h2>目標設定</h2>
   <% if @goal.blank? %> 
-    <p><a href="<%= new_goal_path %>">目標を設定する</a></p>
+    <%= link_to '目標を設定する', new_goal_path, class: "btn" %>
   <% else %>
     <p>目標: <%= @goal.target_time %>分</p>
-    <p><a href="<%= edit_goal_path(@goal) %>">目標を編集する</a></p>
+    <%= link_to '編集', edit_goal_path(@goal), class: 'edit-link' %>
+    <%= link_to '削除', goal_path(@goal), method: :delete, data: { confirm: '本当に削除しますか？' } %>
   <% end %>
-</div>
+
+</body>

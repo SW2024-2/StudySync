@@ -1,13 +1,19 @@
 class ReportsController < ApplicationController
   def index
-    @goal = current_user.goal # ユーザーの目標を取得
-    @progress = @goal&.progress || 0 # 目標の進捗（デフォルト0）
-    @target_time = @goal&.target_time || 0 # 目標時間（デフォルト0
+    @goal = Goal.first
+    # ログインユーザーを取得
     @user = current_user
     if @user.nil?
       redirect_to login_path, alert: "ログインしてください。"
       return
     end
+
+    # ユーザーの最新の目標を取得
+    @goal = @user.goals.last # 最新の目標のみを取得
+
+    # 目標の進捗
+    @progress = @goal&.progress || 0
+    @target_time = @goal&.target_time || 0
 
     # 今日の学習時間を取得
     @todays_study_time = format_subject_times(StudyLog.study_time_today(@user))
@@ -21,24 +27,8 @@ class ReportsController < ApplicationController
     # 合計学習時間（全教科合計）
     @total_study_time = StudyLog.total_study_time(@user)
 
-    # レポート
+    # レポートを取得または新規作成
     @report = Report.find_or_initialize_by(user: @user)
-
-    # ユーザーの目標取得
-    @goal = @user.goal
-
-    # 目標の進捗
-    if @goal.present?
-      @progress = @goal.progress
-      @target_time = @goal.target_time
-    else
-      @progress = 0
-      @target_time = 0
-    end
-  end
-
-  def current_user
-    User.find_by(id: session[:login_uid])  # session[:login_uid]がログインユーザーのIDである前提
   end
 
   private
@@ -46,6 +36,11 @@ class ReportsController < ApplicationController
   # 科目ごとの学習時間を整形
   def format_subject_times(subject_times)
     return {} if subject_times.blank?
-    subject_times  # ここでハッシュ（科目: 時間）のまま返す
+    subject_times # ここでハッシュ（科目: 時間）のまま返す
+  end
+
+  # 現在のログインユーザーを取得
+  def current_user
+    @current_user ||= User.find_by(id: session[:login_uid]) # session[:login_uid]がログインユーザーのID
   end
 end
