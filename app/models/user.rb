@@ -17,5 +17,8 @@ class User < ApplicationRecord
   # レポートとの関連（1対多）
   has_many :reports
   
+  # 目標を関連付ける
+  has_one :goal  
+  
   # 必要に応じて、バリデーションや認証機能のための設定を追加可能
 end

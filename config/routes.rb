@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get 'goals/new'
+  get 'goals/create'
+  get 'goals/edit'
+  get 'goals/update'
   # トップページを study_logs#index に設定
   root 'study_logs#index'
 
@@ -17,6 +21,7 @@ Rails.application.routes.draw do
   resources :comments, only: [:create, :destroy]
   resources :likes, only: [:create, :destroy]
   resources :friendships, only: [:index, :create, :destroy]
+  resources :goals, only: [:new, :create, :edit, :update]  # Goalに関するルーティングを追加
 
   # その他の個別ルート（不要）
   # 以下の個別ルートは削除できます

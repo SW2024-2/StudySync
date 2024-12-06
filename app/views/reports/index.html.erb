@@ -1,5 +1,4 @@
 <div id="report-page">
-  <h1>レポート</h1>
   <h2>今日の学習時間</h2>
   <% if @todays_study_time.blank? %>
     <p class="no-study">まだ勉強をしていません</p>
@@ -14,6 +13,7 @@
     </ul>
   <% end %>
 
+  <!-- 今週の学習時間 -->
   <h2>今週の学習時間</h2>
   <% if @this_weeks_study_time.blank? %>
     <p class="no-study">まだ勉強をしていません</p>
@@ -43,9 +43,29 @@
   <% end %>
 
   <hr />
-
   <div class="total-time">
     <span>合計学習時間</span>
     <span><%= @total_study_time %>分</span>
   </div>
+  
+  
+<h2>目標設定</h2>
+<% if @goal.blank? %> 
+  <p><a href="<%= new_goal_path %>">目標を設定する</a></p>
+<% else %>
+  <p>目標: <%= @goal.target_time %>分</p>
+  <p><a href="<%= edit_goal_path(@goal) %>">目標を編集する</a></p>
+  
+  <h3>進捗状況</h3>
+  <div id="progress-chart" style="width: 200px; height: 200px;">
+  <%= pie_chart [
+  ["進捗", @goal.progress.to_i || 0],
+  ["残り", (@goal.target_time.to_i || 0) - (@goal.progress.to_i || 0)]
+], id: "goal-progress-chart", width: 300, height: 300 %>
+
+  </div>
+
+<% end %>
+
+  
 </div>

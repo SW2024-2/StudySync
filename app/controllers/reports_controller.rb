@@ -1,5 +1,8 @@
 class ReportsController < ApplicationController
   def index
+    @goal = current_user.goal # ユーザーの目標を取得
+    @progress = @goal&.progress || 0 # 目標の進捗（デフォルト0）
+    @target_time = @goal&.target_time || 0 # 目標時間（デフォルト0
     @user = current_user
     if @user.nil?
       redirect_to login_path, alert: "ログインしてください。"
@@ -20,8 +23,20 @@ class ReportsController < ApplicationController
 
     # レポート
     @report = Report.find_or_initialize_by(user: @user)
+
+    # ユーザーの目標取得
+    @goal = @user.goal
+
+    # 目標の進捗
+    if @goal.present?
+      @progress = @goal.progress
+      @target_time = @goal.target_time
+    else
+      @progress = 0
+      @target_time = 0
+    end
   end
-  
+
   def current_user
     User.find_by(id: session[:login_uid])  # session[:login_uid]がログインユーザーのIDである前提
   end

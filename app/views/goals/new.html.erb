@@ -1,0 +1,14 @@
+<h2>目標を設定</h2>
+
+<%= form_with model: @goal, local: true do |form| %>
+  <div>
+    <%= form.label :target_time, "目標時間" %>
+    <%= form.number_field :target_time %> 分
+  </div>
+
+  <div>
+    <%= form.submit "目標を設定" %>
+  </div>
+<% end %>
+
+<%= link_to "キャンセル", reports_path %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_13_072750) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
   create_table "comments", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "study_log_id", null: false
@@ -28,6 +28,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_13_072750) do
     t.datetime "updated_at", null: false
     t.index ["friend_id"], name: "index_friendships_on_friend_id"
     t.index ["user_id"], name: "index_friendships_on_user_id"
+  end
+
+  create_table "goals", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "target_time"
+    t.integer "progress"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_goals_on_user_id"
   end
 
   create_table "likes", force: :cascade do |t|
@@ -71,6 +80,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_13_072750) do
   add_foreign_key "comments", "users"
   add_foreign_key "friendships", "friends"
   add_foreign_key "friendships", "users"
+  add_foreign_key "goals", "users"
   add_foreign_key "likes", "study_logs"
   add_foreign_key "likes", "users"
   add_foreign_key "reports", "users"
