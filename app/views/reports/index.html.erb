@@ -1,15 +1,51 @@
-<h1>学習レポート</h1>
+<div id="report-page">
+  <h1>レポート</h1>
+  <h2>今日の学習時間</h2>
+  <% if @todays_study_time.blank? %>
+    <p class="no-study">まだ勉強をしていません</p>
+  <% else %>
+    <ul>
+      <% @todays_study_time.each do |subject, time| %>
+        <li>
+          <span class="subject"><%= subject %></span>
+          <span class="time"><%= time %>分</span>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
 
-<h2>今日の学習時間</h2>
-<p><%= @todays_study_time %> 分</p>
+  <h2>今週の学習時間</h2>
+  <% if @this_weeks_study_time.blank? %>
+    <p class="no-study">まだ勉強をしていません</p>
+  <% else %>
+    <ul>
+      <% @this_weeks_study_time.each do |subject, time| %>
+        <li>
+          <span class="subject"><%= subject %></span>
+          <span class="time"><%= time %>分</span>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
 
-<h2>今週の学習時間</h2>
-<p><%= @this_weeks_study_time %> 分</p>
+  <h2>今月の学習時間</h2>
+  <% if @this_months_study_time.blank? %>
+    <p class="no-study">まだ勉強をしていません</p>
+  <% else %>
+    <ul>
+      <% @this_months_study_time.each do |subject, time| %>
+        <li>
+          <span class="subject"><%= subject %></span>
+          <span class="time"><%= time %>分</span>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
 
-<h2>今月の学習時間</h2>
-<p><%= @this_months_study_time %> 分</p>
+  <hr />
 
-<h2>合計学習時間</h2>
-<p><%= @total_study_time %> 分</p>
-
-
+  <div class="total-time">
+    <span>合計学習時間</span>
+    <span><%= @total_study_time %>分</span>
+  </div>
+</div>

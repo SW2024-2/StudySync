@@ -95,6 +95,59 @@
   font-size: 1.1em;
 }
 
+#report-page h2 {
+  margin-bottom: 10px;
+  font-size: 1.4em;
+  text-indent: 1em; /* インデントを追加 */
+}
+
+#report-page p {
+  margin-bottom: 20px; /* pタグの下に余白 */
+  font-size: 1.2em; /* pタグのフォントサイズを調整 */
+}
+
+#report-page ul {
+  list-style: none; /* リストのマーカーを消す */
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+#report-page li {
+  display: flex; /* フレックスボックスで横並び */
+  justify-content: space-between; /* 左右に配置 */
+  padding-left: 2em; /* 科目名を少しインデント */
+  margin-bottom: 5px; /* アイテム間に余白を追加 */
+}
+
+#report-page .subject {
+  font-weight: bold;
+}
+
+#report-page .time {
+  text-align: right;
+}
+
+#report-page hr {
+  border: 0;
+  border-top: 1px solid #ccc; /* 水平線のスタイル */
+  margin: 20px 0;
+}
+
+#report-page .total-time {
+  display: flex; /* 横並び */
+  justify-content: space-between; /* 左右に配置 */
+  padding-left: 2em; /* インデントを追加 */
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+#report-page {
+  max-width: 600px; /* コンテンツの幅を制限 */
+  margin: 0 auto; /* 全体を中央揃え */
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
 /* メモのテキストエリアのスタイル */
 form textarea {
   width: 100%; /* 幅を親要素に合わせて100%に設定 */
@@ -142,4 +195,8 @@ form textarea {
   text-align: center; /* ボタンのテキストを中央揃え */
   white-space: nowrap; /* テキストが改行しないようにする */
   box-sizing: border-box; /* ボタンの内側の余白も含める */
-}
+  }
+  
+  .no-study {
+    text-align: center;
+  }
