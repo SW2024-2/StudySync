@@ -1,0 +1,17 @@
+ => 
+[[32m#<User:0x000070b740ee5300[0m
+  id: [34m[1m1[0m,
+  name: [31m[1m"[0m[31ma[0m[31m[1m"[0m,
+  email: [31m[1m"[0m[31ma@ed.fuk.kindai.ac.jp[0m[31m[1m"[0m,
+  password_digest: [31m[1m"[0m[31m[FILTERED][0m[31m[1m"[0m,
+  uid: [31m[1m"[0m[31ma[0m[31m[1m"[0m,
+  created_at: Sun, 01 Dec 2024 15:05:00.527951000 UTC +00:00,
+  updated_at: Sun, 01 Dec 2024 15:05:00.527951000 UTC +00:00[32m>[0m,
+ [32m#<User:0x000070b7411f6418[0m
+  id: [34m[1m2[0m,
+  name: [31m[1m"[0m[31mb[0m[31m[1m"[0m,
+  email: [31m[1m"[0m[31ma@ed.fuk.kindai.ac.jp[0m[31m[1m"[0m,
+  password_digest: [31m[1m"[0m[31m[FILTERED][0m[31m[1m"[0m,
+  uid: [31m[1m"[0m[31mb[0m[31m[1m"[0m,
+  created_at: Sun, 01 Dec 2024 15:13:27.125184000 UTC +00:00,
+  updated_at: Sun, 01 Dec 2024 15:13:27.125184000 UTC +00:00[32m>[0m] 

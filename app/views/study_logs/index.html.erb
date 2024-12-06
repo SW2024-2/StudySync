@@ -7,10 +7,12 @@
       <div class="study-log-header">
         <span class="user-name"><%= study_log.user.name %></span>
         <span class="timestamp"><%= time_ago_in_words(study_log.created_at) %>前</span>
-        <div class="action-links">
-          <%= link_to '削除', study_log_path(study_log), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-link' %>
-          <%= link_to '編集', edit_study_log_path(study_log), class: 'edit-link' %>
-        </div>
+          <div class="action-links">
+            <%= form_tag study_log_path(study_log), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-form' do %>
+              <%= link_to '削除', '#', class: 'delete-link', onclick: 'this.closest("form").submit(); return false;' %>
+            <% end %>
+            <%= link_to '編集', edit_study_log_path(study_log), class: 'edit-link' %>
+          </div>
       </div>
       <!-- 本文部分 -->
       <div class="study-log-body">
