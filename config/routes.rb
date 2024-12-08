@@ -11,11 +11,12 @@ Rails.application.routes.draw do
   get "up", to: "rails/health#show", as: :rails_health_check
 
   # リソース関連
-  resources :users, only: [:new, :create, :show, :edit, :update, :destroy]
+  resources :users, only: [:new, :create, :edit, :update, :destroy]
   resources :study_logs
-  resources :reports do
-    resources :goals
-  end
+  resources :reports, only: [:index]
+  resources :goals, only: [:new, :create, :edit, :update, :destroy]  # showアクションを除外
+  get 'report/index', to: 'reports#index'
+
 
   resources :comments, only: [:create, :destroy]
   resources :likes, only: [:create, :destroy]

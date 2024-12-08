@@ -1,32 +1,19 @@
-<body id="goal-page">
-  <% if @report.present? %>
-    <h2>「<%= @report.date_range %>」に対する新しい目標を作成</h2>
-    
-    <% if alert.present? %>
-      <div class="alert alert-danger"><%= alert %></div> <!-- エラーメッセージの表示 -->
-    <% end %>
+<!-- goal/new.html.erb -->
+<h2>目標を設定する</h2>
 
-    <%= form_with model: @goal, url: report_goals_path(@report) do |form| %>
-      <% if @goal.errors.any? %>  <!-- バリデーションエラーがあった場合 -->
-        <div class="alert alert-danger">
-          <ul>
-            <% @goal.errors.full_messages.each do |message| %>
-              <li><%= message %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
+<%= form_with model: @goal do |form| %>
+  <div>
+    <%= form.label :title, "目標のタイトル" %>
+    <%= form.text_field :title %>
+  </div>
 
-      <%= form.label :title, "目標タイトル" %>
-      <%= form.text_field :title %>
+  <div>
+    <%= form.label :study_time, "学習時間" %>
+    <%= form.number_field :study_time %>
+  </div>
 
-      <%= form.label :study_time, "学習時間 (分)" %>
-      <%= form.number_field :study_time %>
+  <%= form.submit "目標を作成する" %>
+<% end %>
 
-      <%= form.submit "目標を作成" %>
-    <% end %>
 
-  <% else %>
-    <p>レポートが存在しません。</p>
-  <% end %>
-</body>
+<%= link_to '戻る', report_index_path %>

@@ -4,20 +4,42 @@ class ReportsController < ApplicationController
   before_action :set_study_times, only: :index
 
   def index
-    # ユーザーのレポートを取得（ユーザーごとに関連付けられたレポートを取得）
-    @report = Report.find_or_create_by(user_id: @user.id) do |report|
-      report.title = "デフォルトのタイトル" # 必要なデフォルト値を指定
-      report.study_time = 0                # 初期値
+    @report = current_user.reports.last  # 例: ユーザーに関連する最新のレポートを取得
+
+    # @reportがnilの場合は空の配列を設定
+    if @report
+      @goals = @report.goals
+    else
+      @goals = []  # レポートが存在しない場合は空の配列
     end
 
-    # ユーザーの目標一覧
-    @goals = @report.goals
-    @goal = Goal.new                     # 新規目標作成用の空のGoalオブジェクト
-    @current_goal = @goals.first         # 最新の目標
-    @study_time = @current_goal&.study_time || 0 # 最新の目標の学習時間
+    @current_goal = Goal.find_by(user_id: current_user.id)  # ユーザーに関連する目標を取得
+
+    # 目標がない場合は0を設定
+    @study_time = @current_goal ? @current_goal.study_time || 0 : 0
+
+    @goal = Goal.new  # 新規目標作成用の空のGoalオブジェクト
+  end
+
+  def create_goal
+    @goal = Goal.new(goal_params)
+    @goal.user = current_user  # 現在のユーザーを関連付け
+
+    # レポートが存在しない場合、新しく作成する
+    @goal.report = current_user.reports.last || current_user.reports.create
+
+    if @goal.save
+      redirect_to report_path(@goal.report), notice: '目標が作成されました。'
+    else
+      render :new, alert: '目標の作成に失敗しました。'
+    end
   end
 
   private
+
+  def goal_params
+    params.require(:goal).permit(:title, :study_time)
+  end
 
   def set_user
     @user = current_user

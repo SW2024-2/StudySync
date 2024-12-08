@@ -49,25 +49,15 @@
     <span><%= @total_study_time %>分</span>
   </div>
 
-    <!-- 目標表示 -->
-  <h2>現在の目標</h2>
-  <% if @goals.blank? %>
-    <p class="no-goal">まだ目標が設定されていません。</p>
+  <% if @current_goal %>
+    <h2>目標</h2>
+    <p><%= @current_goal.title %></p>
+    <%= link_to '編集', edit_goal_path(@current_goal) %> |
+    <%= form_tag goal_path(@current_goal), method: :delete, data: { confirm: '本当に削除しますか？' } do %>
+      <%= submit_tag '削除' %>
+    <% end %>
   <% else %>
-    <ul>
-      <% @goals.each do |goal| %>
-        <li>
-          <h3><%= goal.title %></h3>
-          <p>目標時間: <%= goal.study_time %> 分</p>
-          <%= link_to "編集", edit_report_goal_path(@report, goal), class: "btn btn-secondary" %>
-          <%= link_to '削除', report_goal_path(@report, goal), method: :delete, data: { confirm: '本当に削除しますか？' } %>
-        </li>
-      <% end %>
-    </ul>
+    <p>目標が設定されていません。</p>
+    <%= link_to '新規目標を作成', new_goal_path %>  <!-- 新規目標作成リンク -->
   <% end %>
-
-  <!-- 新規目標作成ページに移動するリンク -->
-  <h2>新しい目標を設定</h2>
-  <%= link_to "新規目標作成", new_report_goal_path(@report), class: "btn btn-primary" %>
 </body>
-
