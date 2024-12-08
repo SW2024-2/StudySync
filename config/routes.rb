@@ -17,7 +17,6 @@ Rails.application.routes.draw do
   resources :goals, only: [:new, :create, :edit, :update, :destroy]  # showアクションを除外
   get 'report/index', to: 'reports#index'
 
-
   resources :comments, only: [:create, :destroy]
   resources :likes, only: [:create, :destroy]
   resources :friendships, only: [:index, :create, :destroy]

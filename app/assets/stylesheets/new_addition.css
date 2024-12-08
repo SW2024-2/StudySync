@@ -4,7 +4,8 @@
 #learning-record-page form,
 #edit-page form,
 #goal-page form,
-#goal-edit-page form{
+#goal-edit-page form,
+#target-page form{
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -18,7 +19,8 @@
 #learning-record-page form div,
 #edit-page form div,
 #goal-page form div,
-#goal-edit-page form div{
+#goal-edit-page form div,
+#target-page form div{
   margin-bottom: 15px;
   width: 100%;
 }
@@ -28,7 +30,8 @@
 #learning-record-page form label,
 #edit-page form label,
 #goal-page form label,
-#goal-edit-page form label{
+#goal-edit-page form label,
+#target-page form label{
   display: block;
   margin-bottom: 5px;
 }
@@ -36,6 +39,7 @@
 #login-page form input[type="text"],
 #signup-page form input[type="text"],
 #learning-record-page form input[type="text"],
+#target-record-page form input[type="text"],
 #login-page form input[type="email"],
 #signup-page form input[type="email"],
 #login-page form input[type="password"],
@@ -53,7 +57,8 @@
 #learning-record-page form input[type="submit"],
 #edit-page form input[type="submit"],
 #goal-page form input[type="submit"],
-#goal-edit-page form input[type="submit"]{
+#goal-edit-page form input[type="submit"],
+#target-page form input[type="submit"]{
   padding: 10px 15px;
   background-color: #4CAF50;
   color: white;
@@ -68,7 +73,8 @@
 #learning-record-page form input[type="submit"]:hover,
 #edit-page form input[type="submit"]:hover,
 #goal-page form input[type="submit"]:hover,
-#goal-edit-page form input[type="submit"]:hover{
+#goal-edit-page form input[type="submit"]:hover,
+#target-page form input[type="submit"]:hover{
   background-color: #45a049;
 }
 
@@ -78,7 +84,8 @@
 #edit-page h1,
 #report-page h1,
 #goal-page h1,
-#goal-edit-page h1{
+#goal-edit-page h1,
+#target-page h1{
   text-align: left;
   margin-bottom: 20px;
   width: 100%;
@@ -88,7 +95,8 @@
 #login-page a,
 #signup-page a,
 #learning-record-page a,
-#edit-page a {
+#edit-page a,
+#target-page a {
   text-align: left;
   display: block;
   margin-top: 20px;
@@ -100,7 +108,8 @@
 #learning-record-page .notice,
 #edit-page .notice,
 #goal-page .notice,
-#goal-edit-page .notice{
+#goal-edit-page .notice,
+#target-page .notice {
   margin-bottom: 15px;
   padding: 10px;
   background-color: #f0f8ff;
@@ -214,3 +223,28 @@ form textarea {
   .no-study {
     text-align: center;
   }
+
+/* 目標部分 */
+.goal-card {
+  margin-top: 20px;
+  text-align: center; /* 目標タイトルと学習時間を中央揃え */
+}
+
+.goal-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.goal-details {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.goal-actions {
+  text-align: right; /* 編集・削除を左寄せ */
+  margin-top: 10px;
+}
+
+.goal-actions a {
+  margin-right: 10px; /* 編集・削除リンク間にスペース */
+}
