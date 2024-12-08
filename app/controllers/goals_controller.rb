@@ -1,43 +1,64 @@
 class GoalsController < ApplicationController
-  before_action :authenticate_user!  # ログインしていない場合はログイン画面にリダイレクト
+  before_action :set_report
+  before_action :set_goal, only: [:edit, :update, :destroy]
 
   def new
-    @goal = Goal.new
+    @goal = @report.goals.new
   end
 
   def create
-    @goal = Goal.new(goal_params)
-    @goal.user = current_user  # current_user を使用してユーザーを設定
+    @goal = @report.goals.new(goal_params)
+    @goal.user = current_user  # Associate the goal with the logged-in user
 
     if @goal.save
-      redirect_to reports_path, notice: '目標が設定されました'
+      redirect_to reports_path, notice: "目標が作成されました。"
     else
+      flash.now[:alert] = "目標の作成に失敗しました。"
       render :new
     end
   end
 
   def edit
-    @goal = Goal.find(params[:id])
+    # `set_goal`で処理済み
   end
 
   def update
-    @goal = Goal.find(params[:id])
     if @goal.update(goal_params)
-      redirect_to reports_path, notice: '目標が更新されました'
+      redirect_to reports_path, notice: "目標が更新されました。"
     else
+      flash.now[:alert] = "目標の更新に失敗しました。"
       render :edit
     end
   end
 
   def destroy
-    @goal = Goal.find(params[:id])
+    @report = Report.find(params[:report_id])
+    @goal = @report.goals.find(params[:id])
     @goal.destroy
-    redirect_to reports_path, notice: '目標が削除されました。'
+    redirect_to report_path(@report), notice: '目標が削除されました。'
+  end
   end
 
   private
 
+  def set_report
+    @report = Report.find(params[:report_id])
+  end
+
+  def set_goal
+    @goal = @report.goals.find(params[:id])
+  end
+
   def goal_params
-    params.require(:goal).permit(:target_time)
+    params.require(:goal).permit(:study_time)
+  end
+
+  def current_user
+    @current_user ||= User.find_by(id: session[:login_uid]) # session[:login_uid]がログインユーザーのID
+  end
+
+  def authenticate_user
+    unless current_user
+      redirect_to login_path, alert: "ログインしてください。"
   end
 end

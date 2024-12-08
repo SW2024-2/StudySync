@@ -1,0 +1,15 @@
+<h2>目標一覧</h2>
+<%= link_to "新しい目標を作成", new_goal_path, class: "btn btn-primary" %>
+
+<ul>
+  <% @goals.each do |goal| %>
+    <li>
+      <h3><%= goal.title %></h3>
+      <p><%= goal.description %></p>
+      <p>期間: <%= goal.start_date %> 〜 <%= goal.end_date %></p>
+      <p>目標時間: <%= goal.target_time %> 分</p>
+      <%= link_to "編集", edit_goal_path(goal), class: "btn btn-secondary" %>
+      <%= link_to "削除", goal_path(goal), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "btn btn-danger" %>
+    </li>
+  <% end %>
+</ul>

@@ -1,45 +1,43 @@
 class ReportsController < ApplicationController
+  before_action :set_user
+  before_action :redirect_if_not_logged_in
+  before_action :set_study_times, only: :index
+
   def index
-    @goal = Goal.first
-    # ログインユーザーを取得
-    @user = current_user
-    if @user.nil?
-      redirect_to login_path, alert: "ログインしてください。"
-      return
+    # ユーザーのレポートを取得（ユーザーごとに関連付けられたレポートを取得）
+    @report = Report.find_or_create_by(user_id: @user.id) do |report|
+      report.title = "デフォルトのタイトル" # 必要なデフォルト値を指定
+      report.study_time = 0                # 初期値
     end
 
-    # ユーザーの最新の目標を取得
-    @goal = @user.goals.last # 最新の目標のみを取得
-
-    # 目標の進捗
-    @progress = @goal&.progress || 0
-    @target_time = @goal&.target_time || 0
-
-    # 今日の学習時間を取得
-    @todays_study_time = format_subject_times(StudyLog.study_time_today(@user))
-
-    # 今週の学習時間を取得
-    @this_weeks_study_time = format_subject_times(StudyLog.study_time_this_week(@user))
-
-    # 今月の学習時間を取得
-    @this_months_study_time = format_subject_times(StudyLog.study_time_this_month(@user))
-
-    # 合計学習時間（全教科合計）
-    @total_study_time = StudyLog.total_study_time(@user)
-
-    # レポートを取得または新規作成
-    @report = Report.find_or_initialize_by(user: @user)
+    # ユーザーの目標一覧
+    @goals = @report.goals
+    @goal = Goal.new                     # 新規目標作成用の空のGoalオブジェクト
+    @current_goal = @goals.first         # 最新の目標
+    @study_time = @current_goal&.study_time || 0 # 最新の目標の学習時間
   end
 
   private
 
-  # 科目ごとの学習時間を整形
-  def format_subject_times(subject_times)
-    return {} if subject_times.blank?
-    subject_times # ここでハッシュ（科目: 時間）のまま返す
+  def set_user
+    @user = current_user
   end
 
-  # 現在のログインユーザーを取得
+  def redirect_if_not_logged_in
+    redirect_to login_path, alert: "ログインしてください。" if @user.nil?
+  end
+
+  def set_study_times
+    @todays_study_time = format_subject_times(StudyLog.study_time_today(@user))
+    @this_weeks_study_time = format_subject_times(StudyLog.study_time_this_week(@user))
+    @this_months_study_time = format_subject_times(StudyLog.study_time_this_month(@user))
+    @total_study_time = StudyLog.total_study_time(@user)
+  end
+
+  def format_subject_times(subject_times)
+    subject_times || {}
+  end
+
   def current_user
     @current_user ||= User.find_by(id: session[:login_uid]) # session[:login_uid]がログインユーザーのID
   end

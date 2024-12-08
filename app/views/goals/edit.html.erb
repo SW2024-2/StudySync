@@ -1,16 +1,14 @@
 <body id="goal-edit-page">
-<h1>目標編集</h1>
+  <h1>目標編集</h1>
+  
+  <%= form_with model: @goal, local: true do |form| %>
+    <div>
+      <%= form.label :study_time, "目標時間 (分)" %>
+      <%= form.number_field :study_time %>
+    </div>
+    <div>
+      <%= form.submit "更新" %>
+    </div>
+  <% end %>
 
-<%= form_with model: @goal, local: true do |form| %>
-  <div>
-    <%= form.label :target_time, "目標時間 (分)" %>
-    <%= form.number_field :target_time %>
-  </div>
-
-  <div>
-    <%= form.submit "目標を更新する" %>
-  </div>
-<% end %>
-
-  <%= link_to "キャンセル", reports_path %>
 </body>
