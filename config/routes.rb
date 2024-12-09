@@ -14,7 +14,8 @@ Rails.application.routes.draw do
   resources :users, only: [:new, :create, :edit, :update, :destroy]
   resources :study_logs
   resources :reports, only: [:index]
-  resources :goals, only: [:new, :create, :edit, :update, :destroy]  # showアクションを除外
+  resources :goals, only: [:new, :create, :edit, :update, :destroy, :index]  # indexアクションを追加
+
   get 'report/index', to: 'reports#index'
 
   resources :comments, only: [:create, :destroy]

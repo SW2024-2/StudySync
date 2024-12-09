@@ -10,4 +10,20 @@ class Report < ApplicationRecord
       total_study_time: total_study_time
     )
   end
+  
+   def study_time_for_period(period)
+    case period
+    when 'daily'
+      # 今日の学習時間を計算
+      study_time_today
+    when 'weekly'
+      # 今週の学習時間を計算
+      study_time_this_week
+    when 'monthly'
+      # 今月の学習時間を計算
+      study_time_this_month
+    else
+      0
+    end
+  end
 end

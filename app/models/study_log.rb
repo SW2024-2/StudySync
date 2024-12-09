@@ -27,6 +27,7 @@ class StudyLog < ApplicationRecord
     where(user: user).sum(:study_time)  # 全体の学習時間の合計
   end
   
+  # 目標に対する進捗度を計算
   def self.total_study_time_for_goal(user, goal)
     return 0 if goal.nil?
 

@@ -4,8 +4,12 @@ class ReportsController < ApplicationController
 
   def index
     @report = current_user.reports.last
-    @goals = @report&.goals || []
-    @current_goal = current_user.goals.order(created_at: :desc).first
+    @goals_today = current_user.goals.today.order(created_at: :desc)
+    @goals_this_week = current_user.goals.this_week.order(created_at: :desc)
+    @goals_this_month = current_user.goals.this_month.order(created_at: :desc)
+
+    # 今日の目標を一番新しいものを設定
+    @current_goal = @goals_today.first
     @study_time = @current_goal&.study_time || 0
 
     # 進捗度を計算
@@ -19,11 +23,13 @@ class ReportsController < ApplicationController
 
   private
 
+  # ユーザー設定
   def set_user
     @user = current_user
     redirect_to login_path, alert: "ログインしてください。" unless @user
   end
 
+  # 学習時間の設定
   def set_study_times
     @todays_study_time = StudyLog.study_time_today(@user) || {}
     @this_weeks_study_time = StudyLog.study_time_this_week(@user) || {}
@@ -31,6 +37,7 @@ class ReportsController < ApplicationController
     @total_study_time = StudyLog.total_study_time(@user)
   end
 
+  # 現在のユーザーを取得
   def current_user
     @current_user ||= User.find_by(id: session[:login_uid])
   end
