@@ -35,7 +35,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
     t.integer "study_time", null: false
     t.integer "report_id", null: false
     t.integer "user_id", null: false
-    t.string "period"
+    t.string "period", default: "today", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["report_id"], name: "index_goals_on_report_id"
@@ -55,6 +55,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
     t.integer "user_id", null: false
     t.string "date_range"
     t.integer "total_study_time"
+    t.string "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_reports_on_user_id"

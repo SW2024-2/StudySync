@@ -3,7 +3,10 @@ class ReportsController < ApplicationController
   before_action :set_study_times, only: :index
 
   def index
-    @report = current_user.reports.last
+    # レポートが存在しない場合、新しいレポートを作成
+    @report = current_user.reports.last || current_user.reports.create(title: "新しいレポート")
+
+    # 今日、今週、今月の目標を取得
     @goals_today = current_user.goals.today.order(created_at: :desc).first
     @goals_this_week = current_user.goals.this_week.order(created_at: :desc).first
     @goals_this_month = current_user.goals.this_month.order(created_at: :desc).first
@@ -37,16 +40,25 @@ class ReportsController < ApplicationController
   end
 
   # 進捗度を計算するメソッド
-  def calculate_progress(goal, study_time)
-    return 0 unless goal && study_time > 0
+def calculate_progress(goal, study_time)
+  # 目標が存在しない場合は進捗度を0に
+  return 0 unless goal
+  
+  # 学習時間がゼロの場合は進捗度もゼロ
+  return 0 if study_time == 0
 
-    # 目標に対する学習時間を取得
-    total_study_time_for_goal = StudyLog.total_study_time_for_goal(@user, goal) || 0
-    
-    # 進捗度計算（進捗度は最大100%に制限）
-    progress_percentage = (total_study_time_for_goal.to_f / goal.study_time) * 100
-    [progress_percentage, 100].min.round(2)
-  end
+  # 目標に対する学習時間を取得
+  total_study_time_for_goal = StudyLog.total_study_time_for_goal(@user, goal) || 0
+  
+  # 目標に対して学習時間がゼロの場合は進捗度0
+  return 0 if total_study_time_for_goal == 0
+
+  # 進捗度計算（進捗度は最大100%に制限）
+  progress_percentage = (total_study_time_for_goal.to_f / goal.study_time) * 100
+  [progress_percentage, 100].min.round(2)
+end
+
+
 
   # 現在のユーザーを取得
   def current_user
