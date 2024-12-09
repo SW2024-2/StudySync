@@ -28,6 +28,14 @@ class StudyLog < ApplicationRecord
   end
   
   def self.total_study_time_for_goal(user, goal)
-    where(user: user, created_at: goal.created_at..Time.current).sum(:study_time)
+    return 0 if goal.nil?
+
+    # 目標の開始日から現在までの学習時間を集計
+    total_study_time = where(user: user, created_at: goal.created_at..Time.current).sum(:study_time)
+    
+    # 目標設定前の学習データも進捗度に加算
+    total_study_time_before_goal = where(user: user, created_at: ..goal.created_at).sum(:study_time)
+
+    total_study_time + total_study_time_before_goal
   end
 end

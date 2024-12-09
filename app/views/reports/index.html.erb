@@ -64,40 +64,40 @@
       </div>
     </div>
 
-    <!-- グラフ部分 -->
-    <div class="progress-chart">
-      <h3>目標進捗度</h3>
-      <canvas id="progressChart"></canvas>
-    </div>
+      <!-- 目標設定後の進捗度 -->
+  <div class="progress-chart">
+    <h3>目標進捗度</h3>
+    <canvas id="progressChart"></canvas>
+  </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        const ctx = document.getElementById('progressChart').getContext('2d');
-        const progressPercentage = <%= @progress_percentage %>;
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const ctx = document.getElementById('progressChart').getContext('2d');
+      const progressPercentage = <%= @progress_percentage %>;
 
-        new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: ['進捗済み', '残り'],
-            datasets: [{
-              data: [progressPercentage, 100 - progressPercentage],
-              backgroundColor: ['#4caf50', '#ddd'],
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: { position: 'bottom' },
-              tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.raw}%` } }
-            }
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['進捗済み', '残り'],
+          datasets: [{
+            data: [progressPercentage, 100 - progressPercentage],
+            backgroundColor: ['#4caf50', '#ddd'],
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.raw}%` } }
           }
-        });
+        }
       });
-    </script>
-  <% else %>
-    <p class="no-study">目標が設定されていません</p>
-    <%= link_to '新規目標を作成', new_goal_path, class: 'create-goal-link' %>
-  <% end %>
+    });
+  </script>
+<% else %>
+  <p class="no-study">目標が設定されていません</p>
+  <%= link_to '新規目標を作成', new_goal_path, class: 'create-goal-link' %>
+<% end %>
 
   <!-- トップページに戻るリンク -->
   <div class="back-to-home-container" style="margin-top: 40px;">
