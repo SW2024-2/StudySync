@@ -5,36 +5,42 @@
   <h2>今日の学習時間</h2>
   <% if @todays_study_time.blank? %>
     <p class="no-study">まだ勉強をしていません</p>
-  <% else %>
+  <% elsif @todays_study_time.is_a?(Hash) %>
     <ul>
       <% @todays_study_time.each do |subject, time| %>
         <li><%= subject %>: <%= time %>分</li>
       <% end %>
     </ul>
+  <% else %>
+    <p>今日の学習時間: <%= @todays_study_time %>分</p>
   <% end %>
 
   <!-- 今週の学習時間 -->
   <h2>今週の学習時間</h2>
   <% if @this_weeks_study_time.blank? %>
     <p class="no-study">まだ勉強をしていません</p>
-  <% else %>
+  <% elsif @this_weeks_study_time.is_a?(Hash) %>
     <ul>
       <% @this_weeks_study_time.each do |subject, time| %>
         <li><%= subject %>: <%= time %>分</li>
       <% end %>
     </ul>
+  <% else %>
+    <p>今週の学習時間: <%= @this_weeks_study_time %>分</p>
   <% end %>
 
   <!-- 今月の学習時間 -->
   <h2>今月の学習時間</h2>
   <% if @this_months_study_time.blank? %>
     <p class="no-study">まだ勉強をしていません</p>
-  <% else %>
+  <% elsif @this_months_study_time.is_a?(Hash) %>
     <ul>
       <% @this_months_study_time.each do |subject, time| %>
         <li><%= subject %>: <%= time %>分</li>
       <% end %>
     </ul>
+  <% else %>
+    <p>今月の学習時間: <%= @this_months_study_time %>分</p>
   <% end %>
 
   <hr />
@@ -47,7 +53,7 @@
 
   <!-- 目標を見るリンク -->
   <div class="view-goals">
-    <%= link_to '目標を見る', goals_path, class: 'view-goals-link' %>
+    <%= link_to '目標を見る', report_goals_path(report_id: @report.id), class: 'view-goals-link' %>
   </div>
 
   <div class="back-to-home-container" style="margin-top: 40px;">

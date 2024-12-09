@@ -1,27 +1,33 @@
 <body id="target-page">
-  <h1>目標を設定する</h1>
 
-  <%= form_with(model: @goal, local: true) do |form| %>
-  <div class="field">
-    <%= form.label :title, "目標タイトル" %>
-    <%= form.text_field :title %>
+<% if @goal.errors.any? %>
+  <ul>
+    <% @goal.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<h1>目標を設定する</h1>
+
+<%= form_with model: @goal, url: report_goals_path(@report), local: true do |f| %>
+  <div>
+    <%= f.label :title, "目標タイトル" %>
+    <%= f.text_field :title, value: @goal.title %> <!-- Pre-populate title if needed -->
   </div>
-
-  <div class="field">
-    <%= form.label :study_time, "目標学習時間 (分)" %>
-    <%= form.number_field :study_time %>
+  <div>
+    <%= f.label :study_time, "学習時間" %>
+    <%= f.number_field :study_time, value: @goal.study_time %> <!-- Pre-populate study time if needed -->
   </div>
-
-  <div class="field">
-    <%= form.label :period, "目標期間" %>
-    <%= form.select :period, ['today', 'this_week', 'this_month'] %>
+  <div>
+    <%= f.label :period, "目標期間" %> <!-- Add period field if needed -->
+    <%= f.select :period, options_for_select([['今日', 'daily'], ['今週', 'weekly'], ['今月', 'monthly']], @goal.period) %>
   </div>
-
-  <div class="actions">
-    <%= form.submit "目標を作成" %>
+  <div>
+    <%= f.submit "目標を設定" %>
   </div>
 <% end %>
 
-  
-  <%= link_to '戻る', report_index_path %>
+<%= link_to '戻る', report_goals_path(@report) %>
+
 </body>

@@ -1,5 +1,6 @@
 class GoalsController < ApplicationController
-  before_action :set_report, only: [:new, :create, :edit, :update, :destroy]
+  before_action :set_report, only: [:index, :new, :create, :edit, :update, :destroy]
+  before_action :set_goal, only: [:edit, :update, :destroy] # edit と update の前に goal をセット
 
   def index
     # 今日、今週、今月の目標を期間別に取得
@@ -10,63 +11,57 @@ class GoalsController < ApplicationController
 
   def new
     @goal = Goal.new
+    # @report は before_action で設定されるため、ここで再設定は不要です
   end
 
   def create
     @goal = @report.goals.new(goal_params)
-    @goal.user = current_user  # ログイン中のユーザーを設定
-
+    @goal.user = current_user
+  
     if @goal.save
-      redirect_to report_path(@report), notice: '目標が設定されました。'
+      redirect_to report_goals_path(@report), notice: '目標が作成されました'
     else
       render :new
     end
   end
 
   def edit
-    @goal = Goal.find(params[:id])
+    # ここで @goal は set_goal で設定されている
   end
 
   def update
-    @goal = Goal.find(params[:id])
-    
     if @goal.update(goal_params)
-      redirect_to report_path(@report), notice: '目標が更新されました。'
+      redirect_to report_goals_path(@goal.report), notice: '目標が更新されました。'
     else
       render :edit
     end
   end
-
+  
   def destroy
-    @goal = Goal.find(params[:id])
     @goal.destroy
-    redirect_to report_path(@report), notice: '目標が削除されました。'
+    redirect_to report_goals_path(@report), notice: '目標が削除されました。'
   end
 
   private
 
-  # 現在のユーザーのレポートを取得するメソッド
-  def current_user_reports
-    current_user.reports
-  end
-
-  # レポートを設定する
-  def set_report
-    return if action_name == 'index'  # index アクションではスキップ
-
-    # report_id がパラメータとして渡されていない場合のエラーハンドリング
-    @report = current_user_reports.find_by(id: params[:report_id])
-    # レポートが見つからない場合は、レポート一覧ページにリダイレクト
-    redirect_to reports_path, alert: 'レポートが見つかりませんでした。' unless @report
-  end
-
-  # 目標のパラメータを許可する
   def goal_params
     params.require(:goal).permit(:title, :study_time, :period)
   end
 
-  # 現在のユーザーを取得する
   def current_user
     @current_user ||= User.find_by(id: session[:login_uid])
+  end
+
+  def set_report
+    if params[:report_id]
+      @report = current_user.reports.find_by(id: params[:report_id])
+    else
+      @report = current_user.reports.first
+    end
+    redirect_to reports_path, alert: 'レポートが見つかりませんでした。' unless @report
+  end
+
+  def set_goal
+    @goal = @report.goals.find(params[:id]) if @report
   end
 end

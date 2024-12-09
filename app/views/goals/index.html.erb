@@ -9,79 +9,88 @@
   </div>
 
   <!-- 今日の目標 -->
-<div id="today-goals" class="goal-section">
-  <h2>今日の目標</h2>
-  <% if @todays_goals.blank? %>
-    <p class="no-goals">今日の目標が設定されていません。<%= link_to '目標を設定する', new_goal_path, class: 'setup-goal-link' %></p>
-  <% else %>
-    <% @todays_goals.each do |goal| %>
-      <div class="goal-card">
-        <h3><%= goal.title %></h3>
-        <p><strong>学習時間:</strong> <%= goal.study_time %>分</p>
-        <p><strong>進捗度:</strong> <%= goal.progress_percentage.round(2) %>%</p>
-        <div class="progress-chart">
-          <canvas id="progressChart-<%= goal.id %>"></canvas>
+  <div id="today-goals" class="goal-section">
+    <h2>今日の目標</h2>
+    <% if @todays_goals.blank? %>
+      <p class="no-goals">
+        今日の目標が設定されていません。
+        <%= link_to '目標を設定する', new_report_goal_path(report_id: @report.id), class: 'setup-goal-link' %>
+      </p>
+    <% else %>
+      <% @todays_goals.each do |goal| %>
+        <div class="goal-card">
+          <h3><%= goal.title %></h3>
+          <p><strong>学習時間:</strong> <%= goal.study_time %>分</p>
+          <p><strong>進捗度:</strong> <%= goal.progress_percentage.round(2) %>%</p>
+          <div class="progress-chart">
+            <canvas id="progressChart-<%= goal.id %>"></canvas>
+          </div>
+          <div class="goal-actions">
+            <%= link_to '編集', edit_report_goal_path(@report, goal), class: 'edit-link' %> |
+            <%= link_to '削除', report_goal_path(@report, goal), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-link' %>
+          </div>
         </div>
-        <div class="goal-actions">
-          <%= link_to '編集', edit_goal_path(goal), class: 'edit-link' %> |
-          <%= link_to '削除', goal_path(goal), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-link' %>
-        </div>
-      </div>
+      <% end %>
     <% end %>
-  <% end %>
-</div>
+  </div>
 
-<!-- 今週の目標 -->
-<div id="this-week-goals" class="goal-section" style="display:none;">
-  <h2>今週の目標</h2>
-  <% if @this_weeks_goals.blank? %>
-    <p class="no-goals">今週の目標が設定されていません。<%= link_to '目標を設定する', new_goal_path, class: 'setup-goal-link' %></p>
-  <% else %>
-    <% @this_weeks_goals.each do |goal| %>
-      <div class="goal-card">
-        <h3><%= goal.title %></h3>
-        <p><strong>学習時間:</strong> <%= goal.study_time %>分</p>
-        <p><strong>進捗度:</strong> <%= goal.progress_percentage.round(2) %>%</p>
-        <div class="progress-chart">
-          <canvas id="progressChart-<%= goal.id %>"></canvas>
+  <!-- 今週の目標 -->
+  <div id="this-week-goals" class="goal-section" style="display:none;">
+    <h2>今週の目標</h2>
+    <% if @this_weeks_goals.blank? %>
+      <p class="no-goals">
+        今週の目標が設定されていません。
+        <%= link_to '目標を設定する', new_report_goal_path(report_id: @report.id), class: 'setup-goal-link' %>
+      </p>
+    <% else %>
+      <% @this_weeks_goals.each do |goal| %>
+        <div class="goal-card">
+          <h3><%= goal.title %></h3>
+          <p><strong>学習時間:</strong> <%= goal.study_time %>分</p>
+          <p><strong>進捗度:</strong> <%= goal.progress_percentage.round(2) %>%</p>
+          <div class="progress-chart">
+            <canvas id="progressChart-week-<%= goal.id %>"></canvas>
+          </div>
+          <div class="goal-actions">
+            <%= link_to '編集', edit_report_goal_path(@report, goal), class: 'edit-link' %> |
+            <%= link_to '削除', report_goal_path(@report, goal), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-link' %>
+          </div>
         </div>
-        <div class="goal-actions">
-          <%= link_to '編集', edit_goal_path(goal), class: 'edit-link' %> |
-          <%= link_to '削除', goal_path(goal), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-link' %>
-        </div>
-      </div>
+      <% end %>
     <% end %>
-  <% end %>
-</div>
+  </div>
 
-<!-- 今月の目標 -->
-<div id="this-month-goals" class="goal-section" style="display:none;">
-  <h2>今月の目標</h2>
-  <% if @this_months_goals.blank? %>
-    <p class="no-goals">今月の目標が設定されていません。<%= link_to '目標を設定する', new_goal_path, class: 'setup-goal-link' %></p>
-  <% else %>
-    <% @this_months_goals.each do |goal| %>
-      <div class="goal-card">
-        <h3><%= goal.title %></h3>
-        <p><strong>学習時間:</strong> <%= goal.study_time %>分</p>
-        <p><strong>進捗度:</strong> <%= goal.progress_percentage.round(2) %>%</p>
-        <div class="progress-chart">
-          <canvas id="progressChart-<%= goal.id %>"></canvas>
+  <!-- 今月の目標 -->
+  <div id="this-month-goals" class="goal-section" style="display:none;">
+    <h2>今月の目標</h2>
+    <% if @this_months_goals.blank? %>
+      <p class="no-goals">
+        今月の目標が設定されていません。
+        <%= link_to '目標を設定する', new_report_goal_path(report_id: @report.id), class: 'setup-goal-link' %>
+      </p>
+    <% else %>
+      <% @this_months_goals.each do |goal| %>
+        <div class="goal-card">
+          <h3><%= goal.title %></h3>
+          <p><strong>学習時間:</strong> <%= goal.study_time %>分</p>
+          <p><strong>進捗度:</strong> <%= goal.progress_percentage.round(2) %>%</p>
+          <div class="progress-chart">
+            <canvas id="progressChart-month-<%= goal.id %>"></canvas>
+          </div>
+          <div class="goal-actions">
+            <%= link_to '編集', edit_report_goal_path(@report, goal), class: 'edit-link' %> |
+            <%= link_to '削除', report_goal_path(@report, goal), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-link' %>
+          </div>
         </div>
-        <div class="goal-actions">
-          <%= link_to '編集', edit_goal_path(goal), class: 'edit-link' %> |
-          <%= link_to '削除', goal_path(goal), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-link' %>
-        </div>
-      </div>
+      <% end %>
     <% end %>
-  <% end %>
-</div>
+  </div>
 
 </body>
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // 各タブのクリックイベント
+    // タブのクリックイベント
     document.getElementById('today-goals-tab').addEventListener('click', function() {
       showSection('today-goals');
     });
@@ -93,33 +102,75 @@
     });
 
     function showSection(sectionId) {
-      // すべてのセクションを非表示に
       document.querySelectorAll('.goal-section').forEach(function(section) {
         section.style.display = 'none';
       });
-      
-      // 該当するセクションを表示
       document.getElementById(sectionId).style.display = 'block';
-      
-      // すべてのタブのアクティブクラスを外し、クリックされたタブにアクティブクラスを追加
       document.querySelectorAll('.tab-button').forEach(function(tab) {
         tab.classList.remove('active');
       });
-      
       document.getElementById(sectionId + '-tab').classList.add('active');
     }
 
-    // グラフ描画
+    // 各目標の進捗グラフ
     <% @todays_goals.each do |goal| %>
-      const ctx<%= goal.id %> = document.getElementById('progressChart-<%= goal.id %>').getContext('2d');
-      const progressPercentage<%= goal.id %> = <%= goal.progress_percentage %>;
+      const progressPercentage = <%= [goal.progress_percentage, 100].min %>;
 
+      const ctx<%= goal.id %> = document.getElementById('progressChart-<%= goal.id %>').getContext('2d');
       new Chart(ctx<%= goal.id %>, {
         type: 'doughnut',
         data: {
           labels: ['進捗済み', '残り'],
           datasets: [{
-            data: [progressPercentage<%= goal.id %>, 100 - progressPercentage<%= goal.id %>],
+            data: [progressPercentage, 100 - progressPercentage],
+            backgroundColor: ['#4caf50', '#ddd'],
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.raw}%` } }
+          }
+        }
+      });
+    <% end %>
+
+    // 今週の目標進捗グラフ
+    <% @this_weeks_goals.each do |goal| %>
+      const progressPercentageWeek = <%= [goal.progress_percentage, 100].min %>;
+
+      const ctxWeek<%= goal.id %> = document.getElementById('progressChart-week-<%= goal.id %>').getContext('2d');
+      new Chart(ctxWeek<%= goal.id %>, {
+        type: 'doughnut',
+        data: {
+          labels: ['進捗済み', '残り'],
+          datasets: [{
+            data: [progressPercentageWeek, 100 - progressPercentageWeek],
+            backgroundColor: ['#4caf50', '#ddd'],
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.raw}%` } }
+          }
+        }
+      });
+    <% end %>
+
+    // 今月の目標進捗グラフ
+    <% @this_months_goals.each do |goal| %>
+      const progressPercentageMonth = <%= [goal.progress_percentage, 100].min %>;
+
+      const ctxMonth<%= goal.id %> = document.getElementById('progressChart-month-<%= goal.id %>').getContext('2d');
+      new Chart(ctxMonth<%= goal.id %>, {
+        type: 'doughnut',
+        data: {
+          labels: ['進捗済み', '残り'],
+          datasets: [{
+            data: [progressPercentageMonth, 100 - progressPercentageMonth],
             backgroundColor: ['#4caf50', '#ddd'],
           }]
         },

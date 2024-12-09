@@ -1,31 +1,31 @@
 <body id="edit-page">
-<h1>目標を編集する</h1>
+  <h1>目標を編集する</h1>
 
-<%= form_with model: @goal, url: goal_path(@goal), method: :patch do |form| %>
-  <% if @goal.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@goal.errors.count, "error") %> prohibited this goal from being saved:</h2>
-      <ul>
-        <% @goal.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
+  <%= form_with model: @goal, url: report_goal_path(@report, @goal), method: :patch do |form| %>
+    <% if @goal.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@goal.errors.count, "error") %> prohibited this goal from being saved:</h2>
+        <ul>
+          <% @goal.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div>
+      <%= form.label :title, "目標名" %>
+      <%= form.text_field :title %>
+    </div>
+  
+    <div>
+      <%= form.label :study_time, "学習時間" %>
+      <%= form.number_field :study_time %>
+    </div>
+    <div>
+      <%= form.submit "目標を更新する" %>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :title, "目標名" %>
-    <%= form.text_field :title %>
-  </div>
-  
-  <div>
-    <%= form.label :study_time, "学習時間" %>
-    <%= form.number_field :study_time %>
-  </div>
-  <div>
-    <%= form.submit "目標を更新する" %>
-  </div>
-<% end %>
-
-<%= link_to '戻る', report_index_path %>
+  <%= link_to '戻る', report_goals_path(@report) %>
 </body>

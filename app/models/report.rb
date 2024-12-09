@@ -11,19 +11,35 @@ class Report < ApplicationRecord
     )
   end
   
-   def study_time_for_period(period)
+  # periodに応じた学習時間を計算するメソッド
+  def study_time_for_period(period)
     case period
     when 'daily'
-      # 今日の学習時間を計算
       study_time_today
     when 'weekly'
-      # 今週の学習時間を計算
       study_time_this_week
     when 'monthly'
-      # 今月の学習時間を計算
       study_time_this_month
     else
       0
     end
+  end
+
+  # 今日の学習時間を計算するメソッド
+  def study_time_today
+    # 今日の日付の学習時間を合計
+    self.goals.where(created_at: Date.today.all_day).sum(:study_time)
+  end
+
+  # 今週の学習時間を計算するメソッド
+  def study_time_this_week
+    # 今週の月曜日から日曜日までの学習時間を合計
+    self.goals.where(created_at: (Date.today.beginning_of_week..Date.today.end_of_week)).sum(:study_time)
+  end
+
+  # 今月の学習時間を計算するメソッド
+  def study_time_this_month
+    # 今月の1日から今日までの学習時間を合計
+    self.goals.where(created_at: Date.today.beginning_of_month..Date.today.end_of_month).sum(:study_time)
   end
 end
