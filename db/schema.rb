@@ -35,6 +35,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
     t.integer "study_time", null: false
     t.integer "report_id", null: false
     t.integer "user_id", null: false
+    t.string "goal_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["report_id"], name: "index_goals_on_report_id"

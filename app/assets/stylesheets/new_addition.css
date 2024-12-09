@@ -258,3 +258,46 @@ canvas {
   display: block;
   margin: 0 auto;
 }
+
+.tabs {
+  display: flex;
+}
+
+.tab-link {
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+  border: 1px solid #ddd;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.tab-link:hover {
+  background-color: #f0f0f0;
+}
+
+.tab-link.active {
+  font-weight: bold;
+  background-color: #4caf50;
+  color: white;
+  border: 1px solid #4caf50;
+}
+
+.goal-list {
+  margin-top: 20px;
+}
+
+.goal-card {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.create-goal-link {
+  color: #4caf50;
+}
+
+.create-goal-link:hover {
+  text-decoration: underline;
+}
