@@ -26,4 +26,8 @@ class StudyLog < ApplicationRecord
   def self.total_study_time(user)
     where(user: user).sum(:study_time)  # 全体の学習時間の合計
   end
+  
+  def self.total_study_time_for_goal(user, goal)
+    where(user: user, created_at: goal.created_at..Time.current).sum(:study_time)
+  end
 end

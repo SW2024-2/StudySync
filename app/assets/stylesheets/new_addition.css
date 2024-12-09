@@ -248,3 +248,13 @@ form textarea {
 .goal-actions a {
   margin-right: 10px; /* 編集・削除リンク間にスペース */
 }
+.progress-chart {
+  max-width: 300px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
+}
