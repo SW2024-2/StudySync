@@ -144,10 +144,13 @@
 
 #report-page .subject {
   font-weight: bold;
+  flex-basis: 60%; /* 科目名の幅を60%に設定 */
 }
 
 #report-page .time {
   text-align: right;
+  flex-basis: 30%; /* 時間の幅を30%に設定 */
+  padding-left: 20px; /* 科目と時間の間に少し間隔を追加 */
 }
 
 #report-page hr {
@@ -170,6 +173,31 @@
   padding: 20px;
   font-family: Arial, sans-serif;
 }
+
+#report-page .no-study {
+  text-align: center;
+  font-size: 1.2em;
+  color: #888;  /* 色を薄くして目立たなくする */
+}
+
+#report-page hr {
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 20px 0;
+}
+
+.study-time {
+  display: flex;
+  justify-content: space-between; /* 科目名と時間を両端に配置 */
+  padding: 5px 0; /* スペースを少し追加 */
+}
+
+.study-time span:first-child {
+  margin-bottom: 10px;
+  margin-right: 20px;
+  padding-left: 100px; /* 左に余白を追加 */
+}
+
 
 /* メモのテキストエリアのスタイル */
 form textarea {
@@ -259,29 +287,28 @@ canvas {
   margin: 0 auto;
 }
 
-.tabs {
-  display: flex;
-}
 
-.tab-link {
-  padding: 10px;
-  text-decoration: none;
-  color: #333;
-  border: 1px solid #ddd;
-  margin-right: 10px;
-  cursor: pointer;
-}
+    .tab {
+      overflow: hidden;
+      width: 100%;
+      display: flex;
+    }
+    .tab li {
+      border-bottom: 4px solid gray;
+      width: 33.33%;
+      text-align: center;
+      font-size: 18px;
+      padding: 15px;
+      cursor: pointer;
+    }
+    .select {
+      color: rgb(0, 212, 0);
+      border-bottom: 4px solid rgb(0, 212, 0) !important;
+    }
+    .hide {
+      display: none;
+    }
 
-.tab-link:hover {
-  background-color: #f0f0f0;
-}
-
-.tab-link.active {
-  font-weight: bold;
-  background-color: #4caf50;
-  color: white;
-  border: 1px solid #4caf50;
-}
 
 .goal-list {
   margin-top: 20px;
@@ -301,3 +328,17 @@ canvas {
 .create-goal-link:hover {
   text-decoration: underline;
 }
+
+.no-goals {
+  text-align: center;
+  font-size: 24px;  /* フォントサイズを大きく */
+  font-weight: bold; /* 太字にして目立たせる */
+  color: #333; /* 文字色を設定 */
+}
+
+.setup-goal-link {
+  font-size: 18px; /* リンクのフォントサイズを少し大きく */
+  color: rgb(0, 212, 0); /* リンクの色を緑に */
+  text-decoration: underline; /* 下線をつける */
+}
+

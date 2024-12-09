@@ -1,22 +1,18 @@
+<head>
+  <!-- Chart.jsライブラリの読み込み -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
 <body id="goal-page">
-  <!-- レポートに戻るリンク -->
-  <div class="back-to-report">
-  <%= link_to 'レポートに戻る', reports_path, class: 'back-link' %>
-
-  </div>
-
-  <h1>目標</h1>
-
   <!-- タブ -->
-  <div class="tabs">
-    <button id="today-goals-tab" class="tab-button active">今日の目標</button>
-    <button id="this-week-goals-tab" class="tab-button">今週の目標</button>
-    <button id="this-month-goals-tab" class="tab-button">今月の目標</button>
-  </div>
+  <ul class="tab">
+    <li id="today-goals-tab" class="tab-item select">今日の目標</li>
+    <li id="this-week-goals-tab" class="tab-item">今週の目標</li>
+    <li id="this-month-goals-tab" class="tab-item">今月の目標</li>
+  </ul>
 
   <!-- 今日の目標 -->
   <div id="today-goals" class="goal-section">
-    <h2>今日の目標</h2>
     <% if @todays_goals.blank? %>
       <p class="no-goals">
         今日の目標が設定されていません。
@@ -41,8 +37,7 @@
   </div>
 
   <!-- 今週の目標 -->
-  <div id="this-week-goals" class="goal-section" style="display:none;">
-    <h2>今週の目標</h2>
+  <div id="this-week-goals" class="goal-section hide">
     <% if @this_weeks_goals.blank? %>
       <p class="no-goals">
         今週の目標が設定されていません。
@@ -67,8 +62,7 @@
   </div>
 
   <!-- 今月の目標 -->
-  <div id="this-month-goals" class="goal-section" style="display:none;">
-    <h2>今月の目標</h2>
+  <div id="this-month-goals" class="goal-section hide">
     <% if @this_months_goals.blank? %>
       <p class="no-goals">
         今月の目標が設定されていません。
@@ -91,6 +85,10 @@
       <% end %>
     <% end %>
   </div>
+  
+    <div class="back-to-report">
+    <%= link_to 'レポートに戻る', reports_path, class: 'back-link' %>
+  </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -104,103 +102,51 @@
       document.getElementById('this-month-goals-tab').addEventListener('click', function() {
         showSection('this-month-goals');
       });
-  
+
       function showSection(sectionId) {
         // すべてのセクションを非表示にする
         document.querySelectorAll('.goal-section').forEach(function(section) {
-          section.style.display = 'none';
+          section.classList.add('hide');
         });
         // 選択されたセクションを表示する
-        document.getElementById(sectionId).style.display = 'block';
+        document.getElementById(sectionId).classList.remove('hide');
         // タブのアクティブ状態を変更
-        document.querySelectorAll('.tab-button').forEach(function(tab) {
-          tab.classList.remove('active');
+        document.querySelectorAll('.tab-item').forEach(function(tab) {
+          tab.classList.remove('select');
         });
-        document.getElementById(sectionId + '-tab').classList.add('active');
-  
-        // 進捗グラフの描画処理をタブ切り替え後に実行
-        drawProgressCharts(sectionId);
+        document.getElementById(sectionId + '-tab').classList.add('select');
+        
+        // グラフを再描画
+        redrawCharts();
       }
-  
-      function drawProgressCharts(sectionId) {
-        if (sectionId === 'today-goals') {
-          // 今日の目標の進捗グラフ
-          <% @todays_goals.each do |goal| %>
-            const progressPercentage = <%= [goal.progress_percentage, 100].min %>;
-  
-            const ctx<%= goal.id %> = document.getElementById('progressChart-<%= goal.id %>').getContext('2d');
-            new Chart(ctx<%= goal.id %>, {
-              type: 'doughnut',
-              data: {
-                labels: ['進捗済み', '残り'],
-                datasets: [{
-                  data: [progressPercentage, 100 - progressPercentage],
-                  backgroundColor: ['#4caf50', '#ddd'],
-                }]
-              },
-              options: {
-                responsive: true,
-                plugins: {
-                  legend: { position: 'bottom' },
-                  tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.raw}%` } }
-                }
-              }
-            });
-          <% end %>
-        } else if (sectionId === 'this-week-goals') {
-          // 今週の目標の進捗グラフ
-          <% @this_weeks_goals.each do |goal| %>
-            const progressPercentageWeek = <%= [goal.progress_percentage, 100].min %>;
-  
-            const ctxWeek<%= goal.id %> = document.getElementById('progressChart-week-<%= goal.id %>').getContext('2d');
-            new Chart(ctxWeek<%= goal.id %>, {
-              type: 'doughnut',
-              data: {
-                labels: ['進捗済み', '残り'],
-                datasets: [{
-                  data: [progressPercentageWeek, 100 - progressPercentageWeek],
-                  backgroundColor: ['#4caf50', '#ddd'],
-                }]
-              },
-              options: {
-                responsive: true,
-                plugins: {
-                  legend: { position: 'bottom' },
-                  tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.raw}%` } }
-                }
-              }
-            });
-          <% end %>
-        } else if (sectionId === 'this-month-goals') {
-          // 今月の目標の進捗グラフ
-          <% @this_months_goals.each do |goal| %>
-            const progressPercentageMonth = <%= [goal.progress_percentage, 100].min %>;
-  
-            const ctxMonth<%= goal.id %> = document.getElementById('progressChart-month-<%= goal.id %>').getContext('2d');
-            new Chart(ctxMonth<%= goal.id %>, {
-              type: 'doughnut',
-              data: {
-                labels: ['進捗済み', '残り'],
-                datasets: [{
-                  data: [progressPercentageMonth, 100 - progressPercentageMonth],
-                  backgroundColor: ['#4caf50', '#ddd'],
-                }]
-              },
-              options: {
-                responsive: true,
-                plugins: {
-                  legend: { position: 'bottom' },
-                  tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.raw}%` } }
-                }
-              }
-            });
-          <% end %>
-        }
+
+      // グラフの再描画
+      function redrawCharts() {
+        // 各タブのcanvas要素にグラフを描画
+        document.querySelectorAll('.progress-chart canvas').forEach(function(canvas) {
+          var ctx = canvas.getContext('2d');
+          new Chart(ctx, {
+            type: 'pie',  // 円グラフ
+            data: {
+              labels: ['進捗度', '残り'],
+              datasets: [{
+                data: [
+                  parseFloat(canvas.id.split('-')[1]), // 動的に進捗度を取得
+                  100 - parseFloat(canvas.id.split('-')[1]) // 残りの割合
+                ],
+                backgroundColor: ['rgb(0, 212, 0)', 'rgba(200, 200, 200, 0.5)'],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: true
+            }
+          });
+        });
       }
-  
+
       // 初期表示で今日の目標の進捗グラフを描画
-      drawProgressCharts('today-goals');
+      showSection('today-goals');
     });
   </script>
-
 </body>

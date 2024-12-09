@@ -3,18 +3,23 @@ class ReportsController < ApplicationController
   before_action :set_study_times, only: :index
 
   def index
-    # レポートが存在しない場合、新しいレポートを作成
-    @report = current_user.reports.last || current_user.reports.create(title: "新しいレポート")
+    # 新しいレポートがなければ作成
+    @report = current_user.reports.first
+    unless @report
+      @report = current_user.reports.create(title: "新しいレポート", user: current_user)
+    end
 
-    # 今日、今週、今月の目標を取得
-    @goals_today = current_user.goals.today.order(created_at: :desc).first
-    @goals_this_week = current_user.goals.this_week.order(created_at: :desc).first
-    @goals_this_month = current_user.goals.this_month.order(created_at: :desc).first
-
-    # 今日、今週、今月の進捗度を計算
-    @progress_today = calculate_progress(@goals_today, @todays_study_time)
-    @progress_this_week = calculate_progress(@goals_this_week, @this_weeks_study_time)
-    @progress_this_month = calculate_progress(@goals_this_month, @this_months_study_time)
+    # 今日の学習時間を科目ごとに取得
+    @todays_study_time = StudyLog.study_time_today(current_user)
+    
+    # 今週の学習時間を科目ごとに取得
+    @this_weeks_study_time = StudyLog.study_time_this_week(current_user)
+    
+    # 今月の学習時間を科目ごとに取得
+    @this_months_study_time = StudyLog.study_time_this_month(current_user)
+    
+    # 合計学習時間
+    @total_study_time = StudyLog.total_study_time(current_user)
   end
 
   private
@@ -40,25 +45,23 @@ class ReportsController < ApplicationController
   end
 
   # 進捗度を計算するメソッド
-def calculate_progress(goal, study_time)
-  # 目標が存在しない場合は進捗度を0に
-  return 0 unless goal
-  
-  # 学習時間がゼロの場合は進捗度もゼロ
-  return 0 if study_time == 0
+  def calculate_progress(goal, study_time)
+    # 目標が存在しない場合は進捗度を0に
+    return 0 unless goal
+    
+    # 学習時間がゼロの場合は進捗度もゼロ
+    return 0 if study_time == 0
 
-  # 目標に対する学習時間を取得
-  total_study_time_for_goal = StudyLog.total_study_time_for_goal(@user, goal) || 0
-  
-  # 目標に対して学習時間がゼロの場合は進捗度0
-  return 0 if total_study_time_for_goal == 0
+    # 目標に対する学習時間を取得
+    total_study_time_for_goal = StudyLog.total_study_time_for_goal(@user, goal) || 0
+    
+    # 目標に対して学習時間がゼロの場合は進捗度0
+    return 0 if total_study_time_for_goal == 0
 
-  # 進捗度計算（進捗度は最大100%に制限）
-  progress_percentage = (total_study_time_for_goal.to_f / goal.study_time) * 100
-  [progress_percentage, 100].min.round(2)
-end
-
-
+    # 進捗度計算（進捗度は最大100%に制限）
+    progress_percentage = (total_study_time_for_goal.to_f / goal.study_time) * 100
+    [progress_percentage, 100].min.round(2)
+  end
 
   # 現在のユーザーを取得
   def current_user
