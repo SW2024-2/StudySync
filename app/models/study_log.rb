@@ -1,12 +1,17 @@
 class StudyLog < ApplicationRecord
   belongs_to :user
+  belongs_to :goal
 
-  # 今日の学習時間を教科ごとに取得
-  def self.study_time_today(user)
-    where(user: user, created_at: Date.today.beginning_of_day..Date.today.end_of_day)
-      .group(:subject)  # 教科ごとにグループ化
-      .sum(:study_time) # 各教科の学習時間を合計
-  end
+# 今日の学習時間を教科ごとに取得
+def self.study_time_today(user)
+  start_of_today = Time.zone.now.beginning_of_day
+  end_of_today = Time.zone.now.end_of_day
+
+  where(user: user, created_at: start_of_today..end_of_today)
+    .group(:subject)  # 教科ごとにグループ化
+    .sum(:study_time) # 各教科の学習時間を合計
+end
+
 
   # 今週の学習時間を教科ごとに取得
   def self.study_time_this_week(user)
@@ -37,6 +42,7 @@ class StudyLog < ApplicationRecord
     # 目標設定前の学習データも進捗度に加算
     total_study_time_before_goal = where(user: user, created_at: ..goal.created_at).sum(:study_time)
 
+    # 学習時間の合計を返す
     total_study_time + total_study_time_before_goal
   end
 end

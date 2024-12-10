@@ -21,7 +21,7 @@
   </div>
   <div>
     <%= f.label :period, "目標期間" %> <!-- Add period field if needed -->
-    <%= f.select :period, options_for_select([['今日', 'daily'], ['今週', 'weekly'], ['今月', 'monthly']], @goal.period) %>
+    <%= f.select :period, ['daily', 'weekly', 'monthly'], prompt: '選択してください' %>
   </div>
   <div>
     <%= f.submit "目標を設定" %>

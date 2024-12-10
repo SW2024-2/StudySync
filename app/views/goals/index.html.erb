@@ -1,6 +1,11 @@
 <head>
   <!-- Chart.jsライブラリの読み込み -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .hide {
+      display: none;
+    }
+  </style>
 </head>
 
 <body id="goal-page">
@@ -23,9 +28,9 @@
         <div class="goal-card">
           <h3><%= goal.title %></h3>
           <p><strong>学習時間:</strong> <%= goal.study_time %>分</p>
-          <p><strong>進捗度:</strong> <%= goal.progress_percentage.round(2) %>%</p>
+          <p><strong>進捗度:</strong> <%= goal.progress_percentage.present? ? goal.progress_percentage.round(2) : 0 %>%</p>
           <div class="progress-chart">
-            <canvas id="progressChart-<%= goal.id %>"></canvas>
+            <canvas id="progressChart-<%= goal.id %>" data-progress="<%= goal.progress_percentage.present? ? goal.progress_percentage : 0 %>"></canvas>
           </div>
           <div class="goal-actions">
             <%= link_to '編集', edit_report_goal_path(@report, goal), class: 'edit-link' %> |
@@ -48,9 +53,9 @@
         <div class="goal-card">
           <h3><%= goal.title %></h3>
           <p><strong>学習時間:</strong> <%= goal.study_time %>分</p>
-          <p><strong>進捗度:</strong> <%= goal.progress_percentage.round(2) %>%</p>
+          <p><strong>進捗度:</strong> <%= goal.progress_percentage.present? ? goal.progress_percentage.round(2) : 0 %>%</p>
           <div class="progress-chart">
-            <canvas id="progressChart-week-<%= goal.id %>"></canvas>
+            <canvas id="progressChart-week-<%= goal.id %>" data-progress="<%= goal.progress_percentage.present? ? goal.progress_percentage : 0 %>"></canvas>
           </div>
           <div class="goal-actions">
             <%= link_to '編集', edit_report_goal_path(@report, goal), class: 'edit-link' %> |
@@ -73,9 +78,9 @@
         <div class="goal-card">
           <h3><%= goal.title %></h3>
           <p><strong>学習時間:</strong> <%= goal.study_time %>分</p>
-          <p><strong>進捗度:</strong> <%= goal.progress_percentage.round(2) %>%</p>
+          <p><strong>進捗度:</strong> <%= goal.progress_percentage.present? ? goal.progress_percentage.round(2) : 0 %>%</p>
           <div class="progress-chart">
-            <canvas id="progressChart-month-<%= goal.id %>"></canvas>
+            <canvas id="progressChart-month-<%= goal.id %>" data-progress="<%= goal.progress_percentage.present? ? goal.progress_percentage : 0 %>"></canvas>
           </div>
           <div class="goal-actions">
             <%= link_to '編集', edit_report_goal_path(@report, goal), class: 'edit-link' %> |
@@ -86,7 +91,7 @@
     <% end %>
   </div>
   
-    <div class="back-to-report">
+  <div class="back-to-report">
     <%= link_to 'レポートに戻る', reports_path, class: 'back-link' %>
   </div>
 
@@ -116,23 +121,30 @@
         });
         document.getElementById(sectionId + '-tab').classList.add('select');
         
-        // グラフを再描画
-        redrawCharts();
+        // 対応するセクションのグラフを描画
+        redrawCharts(sectionId);
       }
 
       // グラフの再描画
-      function redrawCharts() {
-        // 各タブのcanvas要素にグラフを描画
-        document.querySelectorAll('.progress-chart canvas').forEach(function(canvas) {
+      function redrawCharts(sectionId) {
+        const section = document.getElementById(sectionId);
+        section.querySelectorAll('.progress-chart canvas').forEach(function(canvas) {
           var ctx = canvas.getContext('2d');
+          var progressPercentage = parseFloat(canvas.getAttribute('data-progress'));
+          
+          // 未設定の進捗度はデフォルト値0として処理
+          if (isNaN(progressPercentage)) {
+            progressPercentage = 0;
+          }
+
           new Chart(ctx, {
             type: 'pie',  // 円グラフ
             data: {
               labels: ['進捗度', '残り'],
               datasets: [{
                 data: [
-                  parseFloat(canvas.id.split('-')[1]), // 動的に進捗度を取得
-                  100 - parseFloat(canvas.id.split('-')[1]) // 残りの割合
+                  progressPercentage,  // 進捗度
+                  100 - progressPercentage  // 残りの割合
                 ],
                 backgroundColor: ['rgb(0, 212, 0)', 'rgba(200, 200, 200, 0.5)'],
                 borderWidth: 1

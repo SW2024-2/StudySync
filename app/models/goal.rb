@@ -13,14 +13,8 @@ class Goal < ApplicationRecord
 
   # 進捗度を計算するメソッド
   def progress_percentage
-    # 目標に対する学習時間を取得
-    total_study_time_for_goal = StudyLog.total_study_time_for_goal(user, self) || 0
-
-    # 学習時間がゼロの場合は進捗度を0%に
-    return 0 if total_study_time_for_goal == 0
-
-    # 進捗度を計算（進捗度は最大100%に制限）
-    progress = (total_study_time_for_goal.to_f / study_time) * 100
-    [progress, 100].min.round(2)
+    total_study_time = StudyLog.total_study_time_for_goal(user, self)
+    return 0 if study_time == 0
+    (total_study_time.to_f / study_time.to_f) * 100
   end
 end
