@@ -82,14 +82,13 @@
 #signup-page h1,
 #learning-record-page h1,
 #edit-page h1,
-#report-page h1,
 #goal-page h1,
 #goal-edit-page h1,
 #target-page h1{
   text-align: left;
   margin-bottom: 20px;
   width: 100%;
-  margin-left: 20px;
+  margin-left: 400px;
 }
 
 #login-page a,
