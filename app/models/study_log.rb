@@ -1,6 +1,5 @@
 class StudyLog < ApplicationRecord
   belongs_to :user
-  belongs_to :goal
   
 # 学習日をフォーマットして返す
 def formatted_study_date(format = '%Y/%m/%d')
