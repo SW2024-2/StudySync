@@ -36,6 +36,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
     t.integer "report_id", null: false
     t.integer "user_id", null: false
     t.string "period", default: "today", null: false
+    t.integer "progress_percentage"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["report_id"], name: "index_goals_on_report_id"
@@ -66,6 +67,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
     t.string "subject"
     t.integer "study_time"
     t.text "note"
+    t.string "study_time_method"
+    t.integer "stopwatch_time", default: 0
+    t.integer "timer_time", default: 0
+    t.integer "custom_timer", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_study_logs_on_user_id"

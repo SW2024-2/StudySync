@@ -43,5 +43,11 @@ end
   
     where(user: user, created_at: goal.created_at..Time.current).sum(:study_time)
   end
-
+  def study_time_display
+    # Ensure study_time is not nil
+    time_in_seconds = study_time || 0 # Default to 0 if study_time is nil
+    minutes = (time_in_seconds / 60).floor
+    seconds = time_in_seconds % 60
+    format("%02d:%02d", minutes, seconds)
+  end
 end
