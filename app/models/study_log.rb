@@ -1,6 +1,12 @@
 class StudyLog < ApplicationRecord
   belongs_to :user
   belongs_to :goal
+  
+# 学習日をフォーマットして返す
+def formatted_study_date(format = '%Y/%m/%d')
+  created_at.strftime(format)
+end
+
 
 # 今日の学習時間を教科ごとに取得
 def self.study_time_today(user)
@@ -35,14 +41,8 @@ end
   # 目標に対する進捗度を計算
   def self.total_study_time_for_goal(user, goal)
     return 0 if goal.nil?
-
-    # 目標の開始日から現在までの学習時間を集計
-    total_study_time = where(user: user, created_at: goal.created_at..Time.current).sum(:study_time)
-    
-    # 目標設定前の学習データも進捗度に加算
-    total_study_time_before_goal = where(user: user, created_at: ..goal.created_at).sum(:study_time)
-
-    # 学習時間の合計を返す
-    total_study_time + total_study_time_before_goal
+  
+    where(user: user, created_at: goal.created_at..Time.current).sum(:study_time)
   end
+
 end

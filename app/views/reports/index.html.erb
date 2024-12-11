@@ -2,60 +2,71 @@
   <h1>レポート</h1>
 
   <!-- 今日の学習時間 -->
-  <h2>今日の学習時間</h2>
-  <% if @todays_study_time.empty? %>
-    <p class="no-study">まだ勉強をしていません</p>
-  <% else %>
-    <% @todays_study_time.each do |subject, time| %>
-      <p class="study-time">
-        <span><%= subject %></span>
-        <span><%= time %>分</span>
-      </p>
+  <section>
+    <h2>今日の学習時間</h2>
+    <% if @todays_study_time.empty? %>
+      <p class="no-study">まだ勉強をしていません</p>
+    <% else %>
+      <% @todays_study_time.each do |subject, study_time| %>
+        <article class="study-time">
+          <span><%= Time.zone.now.strftime('%m月%d日') %></span> <!-- 今日の日付 -->
+          <span><%= subject %></span> <!-- 科目 -->
+          <span><%= study_time %>分</span> <!-- 学習時間 -->
+        </article>
+      <% end %>
     <% end %>
-  <% end %>
-  
-  <!-- 今週の学習時間 -->
-  <h2>今週の学習時間</h2>
-  <% if @this_weeks_study_time.empty? %>
-    <p class="no-study">まだ勉強をしていません</p>
-  <% else %>
-    <% @this_weeks_study_time.each do |subject, time| %>
-      <p class="study-time">
-        <span><%= subject %></span>
-        <span><%= time %>分</span>
-      </p>
-    <% end %>
-  <% end %>
-  
-  <!-- 今月の学習時間 -->
-  <h2>今月の学習時間</h2>
-  <% if @this_months_study_time.empty? %>
-    <p class="no-study">まだ勉強をしていません</p>
-  <% else %>
-    <% @this_months_study_time.each do |subject, time| %>
-      <p class="study-time">
-        <span><%= subject %></span>
-        <span><%= time %>分</span>
-      </p>
-    <% end %>
-  <% end %>
+  </section>
 
+  <!-- 今週の学習時間 -->
+  <section>
+    <h2>今週の学習時間</h2>
+    <% if @this_weeks_study_time.empty? %>
+      <p class="no-study">まだ勉強をしていません</p>
+    <% else %>
+      <% @this_weeks_study_time.each do |subject, study_time| %>
+        <article class="study-time">
+          <span><%= Time.zone.now.strftime('%m月%d日') %></span> <!-- 今日の日付 -->
+          <span><%= subject %></span> <!-- 科目 -->
+          <span><%= study_time %>分</span> <!-- 学習時間 -->
+        </article>
+      <% end %>
+    <% end %>
+  </section>
+
+  <!-- 今月の学習時間 -->
+  <section>
+    <h2>今月の学習時間</h2>
+    <% if @this_months_study_time.empty? %>
+      <p class="no-study">まだ勉強をしていません</p>
+    <% else %>
+      <% @this_months_study_time.each do |subject, study_time| %>
+        <article class="study-time">
+          <span><%= Time.zone.now.strftime('%m月%d日') %></span> <!-- 今日の日付 -->
+          <span><%= subject %></span> <!-- 科目 -->
+          <span><%= study_time %>分</span> <!-- 学習時間 -->
+        </article>
+      <% end %>
+    <% end %>
+  </section>
 
   <hr />
 
   <!-- 合計学習時間 -->
   <div class="total-time">
-    <span>合計学習時間</span>
-    <span><%= @total_study_time %>分</span>
+    <span>合計学習時間: </span>
+    <strong><%= @total_study_time %>分</strong>
   </div>
 
-  <!-- 目標を見るリンク (目標を設定するリンクに変更) -->
-<!-- 目標を見るリンク (目標を設定するリンクに変更) -->
+  <!-- 目標を見るリンク -->
   <div class="view-goals" style="margin-top: 40px;">
-    <%= link_to '目標を見る', report_goals_path(report_id: @report.id), class: 'view-goals-link' %>
+    <% if @report.present? && @report.id.present? %>
+      <%= link_to '目標を見る', report_goals_path(report_id: @report.id), class: 'view-goals-link' %>
+    <% else %>
+      <p class="no-goals">目標が設定されていません</p>
+    <% end %>
   </div>
 
-
+  <!-- トップページに戻るリンク -->
   <div class="back-to-home-container" style="margin-top: 40px;">
     <%= link_to 'トップページに戻る', root_path, class: 'back-to-home-link' %>
   </div>
