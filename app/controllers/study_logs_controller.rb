@@ -7,12 +7,10 @@ class StudyLogsController < ApplicationController
 
   # 学習記録の一覧を表示する
   def index
-    # ログインしている場合は、学習記録を降順で並べ替えて表示
     if session[:login_uid]
       @study_logs = StudyLog.includes(:user).order(created_at: :desc)
       render "study_logs/index"
     else
-      # ログインしていなければ、ログイン画面を表示
       render "top/login"
     end
   end
@@ -27,18 +25,34 @@ class StudyLogsController < ApplicationController
   end
 
   # 学習記録を新規作成する
-  def create
-    @study_log = StudyLog.new(study_log_params) # 入力されたデータで新しい学習記録を作成
-    @study_log.user = current_user  # 現在のユーザーを設定（ログインユーザー）
+def create
+  @study_log = StudyLog.new(study_log_params)
+  @study_log.user = current_user
 
-    if @study_log.save # 保存に成功した場合
-      # 成功メッセージと共にトップページにリダイレクト
-      redirect_to root_path, notice: '学習記録が作成されました'
-    else
-      # 保存に失敗した場合は、新規作成画面を再度表示
-      render :new
-    end
+  # 学習時間の計算: どれか一つでも値があれば、それを学習時間に設定する
+  study_time = 0
+
+  if @study_log.study_time_method == 'manual' && @study_log.study_time.present?
+    # 手動入力の学習時間はそのまま使用（数値に変換して保存）
+    study_time = @study_log.study_time.to_i
+  elsif @study_log.study_time_method == 'stopwatch' && @study_log.stopwatch_time.present?
+    # ストップウォッチ時間は秒から分に変換して保存
+    study_time = @study_log.stopwatch_time.to_i / 60  # 秒 → 分に変換
+  elsif @study_log.study_time_method == 'timer' && @study_log.timer_time.present?
+    # タイマー時間は秒から分に変換して保存
+    study_time = @study_log.timer_time.to_i / 60  # 秒 → 分に変換
   end
+
+  # 計算した学習時間を設定
+  @study_log.study_time = study_time
+
+  # レコードの保存処理
+  if @study_log.save
+    redirect_to @study_log, notice: "学習記録が作成されました。"
+  else
+    render :new
+  end
+end
 
   # 学習記録編集画面を表示する
   def edit
@@ -46,12 +60,9 @@ class StudyLogsController < ApplicationController
 
   # 学習記録を更新する
   def update
-    # 入力されたデータで学習記録を更新
     if @study_log.update(study_log_params)
-      # 更新成功メッセージと共にトップページにリダイレクト
       redirect_to root_path, notice: "学習記録が更新されました。"
     else
-      # 更新失敗時はエラーメッセージを表示し、編集画面を再度表示
       flash.now[:alert] = "更新に失敗しました。入力内容を確認してください。"
       render :edit
     end
@@ -59,35 +70,29 @@ class StudyLogsController < ApplicationController
 
   # 学習記録を削除する
   def destroy
-    # 学習記録を削除
     @study_log.destroy
-    # 削除成功メッセージと共に学習記録一覧ページにリダイレクト
     redirect_to study_logs_path, notice: '記録が削除されました'
   end
 
   private
 
-  # 操作対象の学習記録をデータベースから取得
   def set_study_log
     @study_log = StudyLog.find(params[:id])
   end
 
-  # 編集や削除のアクションが呼ばれる前に、現在のユーザーがその学習記録の所有者かを確認
   def check_ownership
-    # 学習記録が現在のユーザーに紐づいているかを確認
     unless @study_log.user == current_user
-      flash[:alert] = "他のユーザーの記録を編集したり削除することはできません。"  # メッセージを表示
-      redirect_to root_path  # トップページにリダイレクト
+      flash[:alert] = "他のユーザーの記録を編集したり削除することはできません。"
+      redirect_to root_path
     end
   end
 
-  # 学習記録のパラメータを許可する（subject, study_time, noteのみを受け付ける）
   def study_log_params
-    params.require(:study_log).permit(:subject, :study_time, :note)
+    params.require(:study_log).permit(:subject, :study_time, :note, :study_time_method, :stopwatch_time, :timer_time)
   end
 
-  # 現在ログインしているユーザーを取得する
+
   def current_user
-    User.find_by(id: session[:login_uid])  # session[:login_uid]がログインユーザーのIDである前提
+    User.find_by(id: session[:login_uid])
   end
 end
