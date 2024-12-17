@@ -25,34 +25,39 @@ class StudyLogsController < ApplicationController
   end
 
   # 学習記録を新規作成する
-def create
-  @study_log = StudyLog.new(study_log_params)
-  @study_log.user = current_user
-
-  # 学習時間の計算: どれか一つでも値があれば、それを学習時間に設定する
-  study_time = 0
-
-  if @study_log.study_time_method == 'manual' && @study_log.study_time.present?
-    # 手動入力の学習時間はそのまま使用（数値に変換して保存）
-    study_time = @study_log.study_time.to_i
-  elsif @study_log.study_time_method == 'stopwatch' && @study_log.stopwatch_time.present?
-    # ストップウォッチ時間は秒から分に変換して保存
-    study_time = @study_log.stopwatch_time.to_i / 60  # 秒 → 分に変換
-  elsif @study_log.study_time_method == 'timer' && @study_log.timer_time.present?
-    # タイマー時間は秒から分に変換して保存
-    study_time = @study_log.timer_time.to_i / 60  # 秒 → 分に変換
+  def create
+    @study_log = StudyLog.new(study_log_params)
+    @study_log.user = current_user
+  
+    study_time = 0
+  
+    if @study_log.study_time_method == 'manual' && @study_log.study_time.present?
+      # 手動入力の学習時間
+      study_time = @study_log.study_time.to_i
+    elsif @study_log.study_time_method == 'stopwatch' && @study_log.stopwatch_time.present?
+      # ストップウォッチ時間（秒 → 分変換）
+      study_time = @study_log.stopwatch_time.to_i / 60
+    elsif @study_log.study_time_method == 'timer' && @study_log.timer_time.present?
+      # タイマー時間から実際の学習時間を計算
+      if @study_log.timer_remaining.present?
+        # タイマー設定時間（分） - 残り時間（分）
+        study_time = (@study_log.timer_time.to_i / 60) - (@study_log.timer_remaining.to_i / 60)
+        study_time = [study_time, 0].max  # 負の値にならないようにする
+      else
+        # 残り時間が未入力の場合はタイマー設定時間を使用
+        study_time = @study_log.timer_time.to_i / 60
+      end
+    end
+  
+    @study_log.study_time = study_time
+  
+    if @study_log.save
+      redirect_to @study_log, notice: "学習記録が作成されました。"
+    else
+      render :new
+    end
   end
 
-  # 計算した学習時間を設定
-  @study_log.study_time = study_time
-
-  # レコードの保存処理
-  if @study_log.save
-    redirect_to @study_log, notice: "学習記録が作成されました。"
-  else
-    render :new
-  end
-end
 
   # 学習記録編集画面を表示する
   def edit

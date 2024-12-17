@@ -71,6 +71,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
     t.integer "stopwatch_time", default: 0
     t.integer "timer_time", default: 0
     t.integer "custom_timer", default: 0
+    t.integer "timer_remaining"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_study_logs_on_user_id"

@@ -9,6 +9,7 @@ class CreateStudyLogs < ActiveRecord::Migration[7.1]
       t.integer :stopwatch_time, default: 0 # ストップウォッチで計測した時間（秒）
       t.integer :timer_time, default: 0 # タイマーで設定した時間（秒）
       t.integer :custom_timer, default: 0 # タイマーのカスタム時間（秒）
+      t.integer :timer_remaining
 
       t.timestamps
     end

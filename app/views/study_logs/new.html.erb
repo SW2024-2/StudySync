@@ -50,13 +50,14 @@
         <p>残り時間: <span id="timer-time">00:00</span></p>
         <button type="button" id="start-timer">スタート</button>
         <button type="button" id="stop-timer" style="display: none;">停止</button>
+        <button type="button" id="complete-timer" style="display: none;">完了</button>
       </div>
     </div>
 
     <!-- Hiddenフィールド: ストップウォッチやタイマー時間 -->
     <%= f.hidden_field :stopwatch_time %>
     <%= f.hidden_field :timer_time %>
-    <%= f.hidden_field :study_time_display %>
+    <%= f.hidden_field :study_time %>
 
     <!-- メモ入力 -->
     <div>
@@ -112,12 +113,8 @@
 
       $('#complete-stopwatch').click(function() {
         clearInterval(stopwatchInterval);
+        $("input[name='study_log[study_time]']").val(Math.ceil(stopwatchTime / 60));
         $("input[name='study_log[stopwatch_time]']").val(stopwatchTime);
-        $("input[name='study_log[study_time]']").val(stopwatchTime);
-        $("input[name='study_log[study_time_display]']").val(
-          `${Math.floor(stopwatchTime / 60)}:${(stopwatchTime % 60).toString().padStart(2, '0')}`
-        );
-        toggleFields('manual');
       });
 
       // タイマー機能
@@ -128,26 +125,32 @@
           return;
         }
         timerTime = inputMinutes * 60;
+        $('#timer-time').text(`${inputMinutes}:00`);
         timerInterval = setInterval(function() {
-          if (timerTime <= 0) {
-            clearInterval(timerInterval);
-            alert("タイマーが終了しました!");
-            return;
-          }
           timerTime--;
           let minutes = Math.floor(timerTime / 60);
           let seconds = timerTime % 60;
           $('#timer-time').text(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+          if (timerTime <= 0) {
+            clearInterval(timerInterval);
+            alert("タイマーが終了しました！");
+          }
         }, 1000);
         $('#start-timer').hide();
-        $('#stop-timer').show();
+        $('#stop-timer, #complete-timer').show();
       });
 
       $('#stop-timer').click(function() {
         clearInterval(timerInterval);
-        $("input[name='study_log[study_time]']").val(Math.ceil(timerTime / 60));
+        $('#start-timer').show();
+        $('#stop-timer').hide();
+      });
+
+      $('#complete-timer').click(function() {
+        clearInterval(timerInterval);
+        const timeStudied = Math.ceil(timerTime / 60);
+        $("input[name='study_log[study_time]']").val(timeStudied);
         $("input[name='study_log[timer_time]']").val(timerTime);
-        toggleFields('manual');
       });
     });
   </script>
