@@ -1,0 +1,32 @@
+/* カレンダーの日付に対するスタイル */
+.simple-calendar table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.simple-calendar th, .simple-calendar td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.simple-calendar th {
+  background-color: #f4f4f4;
+}
+
+.simple-calendar td.today {
+  background-color: #dff0d8;
+}
+
+.simple-calendar td.outside-month {
+  background-color: #f0f0f0;  /* 先月や来月の日付をグレーにする */
+  color: #bbb;  /* 薄いグレーに文字色を変更 */
+}
+
+.simple-calendar td {
+  cursor: pointer;
+}
+
+.simple-calendar td .study-mark {
+  color: #007bff;
+}
