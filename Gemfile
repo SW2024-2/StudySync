@@ -46,6 +46,8 @@ gem "bootsnap", require: false
 
 gem 'chartkick'
 gem 'groupdate' # chartkickのために必要
+gem 'simple_calendar', '~> 2.0'
+
 
 
 group :development, :test do

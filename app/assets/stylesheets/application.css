@@ -12,11 +12,7 @@
  *
  *= require_tree .
  *= require_self
+ *= require simple_calendar 
  */
 
-/* app/assets/stylesheets/application.css */
-
-/* 
- *= require study_logs 
- *= require new_addition 
- */
+/* 以下のスタイルは必要に応じて追加できます */

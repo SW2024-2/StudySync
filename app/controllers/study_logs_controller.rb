@@ -1,3 +1,4 @@
+
 class StudyLogsController < ApplicationController
   before_action :set_study_log, only: [:show, :edit, :update, :destroy]
   before_action :check_ownership, only: [:edit, :destroy]
