@@ -56,6 +56,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
     t.integer "user_id", null: false
     t.string "date_range"
     t.integer "total_study_time"
+    t.string "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_reports_on_user_id"
@@ -64,8 +65,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
   create_table "study_logs", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "subject"
-    t.integer "study_time"
     t.text "note"
+    t.integer "study_time_hours"
+    t.integer "study_time_minutes"
+    t.integer "study_time"
+    t.string "study_time_method"
+    t.integer "stopwatch_time"
+    t.integer "timer_time"
+    t.integer "timer_remaining"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_study_logs_on_user_id"
@@ -82,8 +89,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
 
   add_foreign_key "comments", "study_logs"
   add_foreign_key "comments", "users"
-  add_foreign_key "friendships", "friends"
   add_foreign_key "friendships", "users"
+  add_foreign_key "friendships", "users", column: "friend_id"
   add_foreign_key "goals", "reports"
   add_foreign_key "goals", "users"
   add_foreign_key "likes", "study_logs"
