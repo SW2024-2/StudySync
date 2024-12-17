@@ -17,15 +17,21 @@
       <%= form.label :title, "目標名" %>
       <%= form.text_field :title %>
     </div>
-  
+
     <div>
-      <%= form.label :study_time, "学習時間" %>
-      <%= form.number_field :study_time %>
+      <%= form.label :study_time_hours, "学習時間 (時間)" %>
+      <%= form.number_field :study_time_hours, value: (@goal.study_time / 60).to_i, min: 0, step: 1 %> 時間
     </div>
+
+    <div>
+      <%= form.label :study_time_minutes, "学習時間 (分)" %>
+      <%= form.number_field :study_time_minutes, value: (@goal.study_time % 60).to_i, min: 0, step: 1 %> 分
+    </div>
+
     <div>
       <%= form.submit "目標を更新する" %>
     </div>
   <% end %>
 
-  <%= link_to '戻る', report_goals_path(@report),style: 'margin-left: 400px;' %>
+  <%= link_to '戻る', report_goals_path(@report), style: 'margin-left: 400px;' %>
 </body>

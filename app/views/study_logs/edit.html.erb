@@ -1,5 +1,6 @@
 <body id="edit-page">
   <h1>学習記録の編集</h1>
+  
   <%= form_with(model: @study_log, local: true) do |form| %>
     <% if @study_log.errors.any? %>
       <div class="error-messages">
@@ -17,9 +18,13 @@
       <%= form.text_field :subject %>
     </div>
   
+    <!-- 時間と分の入力 -->
     <div>
       <%= form.label :study_time, "学習時間" %>
-      <%= form.number_field :study_time %>
+      <div>
+        <%= form.number_field :study_time_hours, value: (@study_log.study_time / 60).floor, min: 0, placeholder: "時間", step: 1 %> 時間
+        <%= form.number_field :study_time_minutes, value: (@study_log.study_time % 60), min: 0, max: 59, placeholder: "分", step: 1 %> 分
+      </div>
     </div>
   
     <div>

@@ -17,7 +17,11 @@
       <!-- 本文部分 -->
       <div class="study-log-body">
         <h3 class="subject"><%= study_log.subject %></h3>
-        <h3 class="study-time"><%= study_log.study_time %>分</h3>
+        <h3 class="study-time">
+          <% hours = (study_log.study_time / 60).floor %> <!-- 時間部分 -->
+          <% minutes = study_log.study_time % 60 %> <!-- 分部分 -->
+          <%= "#{hours}時間 #{minutes}分" %> <!-- 時間と分を表示 -->
+        </h3>
       </div>
       <!-- フッター部分 -->
       <div class="study-log-footer">

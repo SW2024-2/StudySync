@@ -30,8 +30,12 @@
 
     <!-- 手動入力フィールド -->
     <div id="manual-input-fields" style="display: none;">
-      <%= f.label :study_time, "学習時間(分)" %>
-      <%= f.number_field :study_time %>
+      <%= f.label :study_time, "学習時間" %>
+      <!-- 時間と分を別々に入力 -->
+      <div>
+        <%= f.number_field :study_time_hours, min: 0, placeholder: "時間", style: "width: 50px;" %> 時間
+        <%= f.number_field :study_time_minutes, min: 0, placeholder: "分", style: "width: 50px;" %> 分
+      </div>
     </div>
 
     <!-- ストップウォッチとタイマーUI -->

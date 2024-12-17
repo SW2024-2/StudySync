@@ -19,20 +19,9 @@ class GoalsController < ApplicationController
     @this_months_goals = Goal.where(user: current_user, period: 'monthly')
 
     # 各目標の進捗度を計算して、進捗度を渡す
-    @todays_goals.each do |goal|
-      goal_progress = calculate_progress(goal, 'today')
-      goal.instance_variable_set(:@progress, goal_progress)
-    end
-
-    @this_weeks_goals.each do |goal|
-      goal_progress = calculate_progress(goal, 'this_week')
-      goal.instance_variable_set(:@progress, goal_progress)
-    end
-
-    @this_months_goals.each do |goal|
-      goal_progress = calculate_progress(goal, 'this_month')
-      goal.instance_variable_set(:@progress, goal_progress)
-    end
+    calculate_progress_for_goals(@todays_goals, 'today')
+    calculate_progress_for_goals(@this_weeks_goals, 'this_week')
+    calculate_progress_for_goals(@this_months_goals, 'this_month')
   end
 
   def new
@@ -46,6 +35,9 @@ class GoalsController < ApplicationController
     @goal = @report.goals.new(goal_params)
     @goal.user = current_user
 
+    # 学習時間を時間と分を合計して保存
+    @goal.study_time = calculate_total_study_time(@goal.study_time_hours.to_i, @goal.study_time_minutes.to_i)
+
     if @goal.save
       redirect_to report_goals_path(@report), notice: '目標が作成されました'
     else
@@ -57,12 +49,18 @@ class GoalsController < ApplicationController
   end
 
   def update
-    if @goal.update(goal_params)
+    # 時間と分を合計して学習時間を計算
+    total_study_time = (@goal.study_time_hours.to_i * 60) + @goal.study_time_minutes.to_i
+  
+    # 学習時間を更新
+    if @goal.update(goal_params.merge(study_time: total_study_time))
       redirect_to report_goals_path(@goal.report), notice: '目標が更新されました。'
     else
       render :edit
     end
   end
+
+
 
   def destroy
     @goal.destroy
@@ -72,8 +70,9 @@ class GoalsController < ApplicationController
   private
 
   def goal_params
-    params.require(:goal).permit(:title, :study_time, :period)  # period を追加
+    params.require(:goal).permit(:title, :study_time_hours, :study_time_minutes, :period)
   end
+
 
   def set_report
     if params[:report_id]
@@ -87,25 +86,35 @@ class GoalsController < ApplicationController
     @goal = @report.goals.find(params[:id]) if @report
   end
 
-def calculate_progress(goal, period)
-  total_study_time = case period
-  when 'today'
-    StudyLog.study_time_today(current_user)[goal.title] || 0
-  when 'this_week'
-    StudyLog.study_time_this_week(current_user)[goal.title] || 0
-  when 'this_month'
-    StudyLog.study_time_this_month(current_user)[goal.title] || 0
-  else
-    0
+  def calculate_total_study_time(hours, minutes)
+    # 時間と分を合計して分に変換
+    (hours * 60) + minutes
   end
 
-  return 0 if goal.study_time == 0  # 目標時間が0の場合、進捗は0%
-  (total_study_time.to_f / goal.study_time.to_f) * 100
-end
+  def calculate_progress_for_goals(goals, period)
+    goals.each do |goal|
+      goal_progress = calculate_progress(goal, period)
+      goal.instance_variable_set(:@progress, goal_progress)
+    end
+  end
 
+  def calculate_progress(goal, period)
+    total_study_time = case period
+    when 'today'
+      StudyLog.study_time_today(current_user)[goal.title] || 0
+    when 'this_week'
+      StudyLog.study_time_this_week(current_user)[goal.title] || 0
+    when 'this_month'
+      StudyLog.study_time_this_month(current_user)[goal.title] || 0
+    else
+      0
+    end
 
-  
-    # 現在のユーザーを取得
+    return 0 if goal.study_time == 0  # 目標時間が0の場合、進捗は0%
+    (total_study_time.to_f / goal.study_time.to_f) * 100
+  end
+
+  # 現在のユーザーを取得
   def current_user
     @current_user ||= User.find_by(id: session[:login_uid])
   end

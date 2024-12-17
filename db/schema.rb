@@ -65,12 +65,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
   create_table "study_logs", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "subject"
-    t.integer "study_time"
     t.text "note"
+    t.integer "study_time_hours"
+    t.integer "study_time_minutes"
+    t.integer "study_time"
     t.string "study_time_method"
-    t.integer "stopwatch_time", default: 0
-    t.integer "timer_time", default: 0
-    t.integer "custom_timer", default: 0
+    t.integer "stopwatch_time"
+    t.integer "timer_time"
     t.integer "timer_remaining"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
