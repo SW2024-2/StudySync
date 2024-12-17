@@ -1,0 +1,34 @@
+<h3>ユーザー検索</h3>
+
+<!-- 検索フォーム -->
+<%= form_with url: search_friendships_path, method: :get, local: true do |form| %>
+  <div>
+    <%= form.text_field :query, placeholder: "名前またはIDで検索", class: "search-input" %>
+    <%= form.submit "検索🔍", class: "search-button" %>
+  </div>
+<% end %>
+
+<!-- 検索結果表示 -->
+<h4>検索結果</h4>
+
+<% if @users.any? %>
+  <% @users.each do |user| %>
+    <div>
+      <p><strong>名前:</strong> <%= user.name %> | <strong>ID:</strong> <%= user.uid %></p>
+
+      <% if current_user.friends.include?(user) %>
+        <!-- 友達削除ボタン -->
+        <%= button_to '友達削除', friendship_path(user), method: :delete, class: "btn btn-danger" %>
+      <% else %>
+        <!-- 友達追加ボタン -->
+        <%= button_to '友達追加', friendships_path(friend_id: user.id), method: :post, class: "btn btn-primary" %>
+      <% end %>
+    </div>
+  <% end %>
+<% else %>
+  <p>該当するユーザーが見つかりません。</p>
+<% end %>
+
+<div class="back-link">
+<%= link_to '戻る', friendships_path, class: 'back-button' %>
+</div>

@@ -1,2 +1,22 @@
-<h1>Friendships#index</h1>
-<p>Find me in app/views/friendships/index.html.erb</p>
+<h3>フレンド一覧</h3>
+
+<!-- フレンド検索へのリンク -->
+<%= link_to '友達を検索する', search_friendships_path, class: "btn btn-primary" %>
+
+<!-- フレンドリスト -->
+<% if @friends.present? %>
+  <ul>
+    <% @friends.each do |friend| %>
+      <li>
+        <strong>名前:</strong> <%= friend.name %> | <strong>ID:</strong> <%= friend.uid %>
+        <%= button_to '友達削除', friendship_path(friend), method: :delete, class: "btn btn-danger" %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>現在、友達はいません。</p>
+<% end %>
+
+<div class="back-link">
+<%= link_to '戻る', study_logs_path, class: 'back-button' %>
+</div>

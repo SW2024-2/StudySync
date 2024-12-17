@@ -23,7 +23,12 @@ Rails.application.routes.draw do
   end
 
   resources :likes, only: [:create, :destroy]
-  resources :friendships, only: [:index, :create, :destroy]
+  
+  resources :friendships, only: [:index, :create, :destroy] do
+    collection do
+      get 'search' # 検索機能用のルート
+    end
+  end
   
   # その他の個別ルート（不要）
   # 以下の個別ルートは削除できます

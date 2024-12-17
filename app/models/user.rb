@@ -21,4 +21,7 @@ class User < ApplicationRecord
   has_many :goals, dependent: :destroy
   
   # 必要に応じて、バリデーションや認証機能のための設定を追加可能
+  # 友達として追加された場合（逆方向の関連）
+  has_many :inverse_friendships, class_name: "Friendship", foreign_key: "friend_id", dependent: :destroy
+  has_many :inverse_friends, through: :inverse_friendships, source: :user
 end
