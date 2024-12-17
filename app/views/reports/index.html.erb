@@ -11,7 +11,7 @@
         <article class="study-time">
           <span><%= Time.zone.now.strftime('%m月%d日') %></span> <!-- 今日の日付 -->
           <span><%= subject %></span> <!-- 科目 -->
-          <span><%= study_time %>分</span> <!-- 学習時間 -->
+          <span><%= "#{study_time / 60}時間 #{study_time % 60}分" %></span> <!-- 学習時間 (時間と分) -->
         </article>
       <% end %>
     <% end %>
@@ -27,7 +27,7 @@
         <article class="study-time">
           <span><%= Time.zone.now.strftime('%m月%d日') %></span> <!-- 今日の日付 -->
           <span><%= subject %></span> <!-- 科目 -->
-          <span><%= study_time %>分</span> <!-- 学習時間 -->
+          <span><%= "#{study_time / 60}時間 #{study_time % 60}分" %></span> <!-- 学習時間 (時間と分) -->
         </article>
       <% end %>
     <% end %>
@@ -43,7 +43,7 @@
         <article class="study-time">
           <span><%= Time.zone.now.strftime('%m月%d日') %></span> <!-- 今日の日付 -->
           <span><%= subject %></span> <!-- 科目 -->
-          <span><%= study_time %>分</span> <!-- 学習時間 -->
+          <span><%= "#{study_time / 60}時間 #{study_time % 60}分" %></span> <!-- 学習時間 (時間と分) -->
         </article>
       <% end %>
     <% end %>
@@ -54,7 +54,7 @@
   <!-- 合計学習時間 -->
   <div class="total-time">
     <span>合計学習時間: </span>
-    <strong><%= @total_study_time %>分</strong>
+    <strong><%= "#{@total_study_time / 60}時間 #{@total_study_time % 60}分" %></strong> <!-- 合計学習時間 (時間と分) -->
   </div>
 
   <!-- 目標を見るリンク -->

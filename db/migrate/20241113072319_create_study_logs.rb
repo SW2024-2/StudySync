@@ -1,15 +1,16 @@
 class CreateStudyLogs < ActiveRecord::Migration[7.1]
   def change
     create_table :study_logs do |t|
-      t.references :user, null: false, foreign_key: true
-      t.string :subject
-      t.integer :study_time # 学習時間（手動入力など）
-      t.text :note
-      t.string :study_time_method # 学習時間記録方法（手動、ストップウォッチ、タイマー）
-      t.integer :stopwatch_time, default: 0 # ストップウォッチで計測した時間（秒）
-      t.integer :timer_time, default: 0 # タイマーで設定した時間（秒）
-      t.integer :custom_timer, default: 0 # タイマーのカスタム時間（秒）
-      t.integer :timer_remaining
+      t.references :user, null: false, foreign_key: true # ユーザーとの関連
+      t.string :subject # 科目
+      t.text :note # ノート
+      t.integer :study_time_hours # 時間
+      t.integer :study_time_minutes # 分
+      t.integer :study_time # 学習時間（計算された結果として保存する場合）
+      t.string :study_time_method # 学習方法（手動、ストップウォッチ、タイマー）
+      t.integer :stopwatch_time # ストップウォッチの時間
+      t.integer :timer_time # タイマーの時間
+      t.integer :timer_remaining # タイマー残り時間
 
       t.timestamps
     end

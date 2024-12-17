@@ -15,14 +15,23 @@
     <%= f.label :title, "目標タイトル" %>
     <%= f.text_field :title, value: @goal.title %> <!-- Pre-populate title if needed -->
   </div>
+  
+  <!-- 時間と分を別々に入力 -->
   <div>
-    <%= f.label :study_time, "学習時間" %>
-    <%= f.number_field :study_time, value: @goal.study_time %> <!-- Pre-populate study time if needed -->
+    <%= f.label :study_time_hours, "学習時間（時間）" %>
+    <%= f.number_field :study_time_hours, value: @goal.study_time_hours, min: 0 %>
   </div>
+  
+  <div>
+    <%= f.label :study_time_minutes, "学習時間（分）" %>
+    <%= f.number_field :study_time_minutes, value: @goal.study_time_minutes, min: 0, max: 59 %>
+  </div>
+  
   <div>
     <%= f.label :period, "目標期間" %> <!-- Add period field if needed -->
     <%= f.select :period, ['daily', 'weekly', 'monthly'], prompt: '選択してください' %>
   </div>
+
   <div>
     <%= f.submit "目標を設定" %>
   </div>

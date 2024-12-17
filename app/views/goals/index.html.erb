@@ -27,7 +27,10 @@
       <% @todays_goals.each do |goal| %>
         <div class="goal-card">
           <h3><%= goal.title %></h3>
-          <p><strong>学習時間:</strong> <%= goal.study_time %>分</p>
+          <% # 学習時間を時間と分に変換 %>
+          <% hours = goal.study_time / 60 %> <!-- 時間を算出 -->
+          <% minutes = goal.study_time % 60 %> <!-- 残りの分を算出 -->
+          <p><strong>学習時間:</strong> <%= hours %>時間 <%= minutes %>分</p>
           <p><strong>進捗度:</strong> <%= goal.progress_percentage.present? ? goal.progress_percentage.round(2) : 0 %>%</p>
           <div class="progress-chart">
             <canvas id="progressChart-<%= goal.id %>" data-progress="<%= goal.progress_percentage.present? ? goal.progress_percentage : 0 %>"></canvas>
@@ -52,7 +55,10 @@
       <% @this_weeks_goals.each do |goal| %>
         <div class="goal-card">
           <h3><%= goal.title %></h3>
-          <p><strong>学習時間:</strong> <%= goal.study_time %>分</p>
+          <% # 学習時間を時間と分に変換 %>
+          <% hours = goal.study_time / 60 %> <!-- 時間を算出 -->
+          <% minutes = goal.study_time % 60 %> <!-- 残りの分を算出 -->
+          <p><strong>学習時間:</strong> <%= hours %>時間 <%= minutes %>分</p>
           <p><strong>進捗度:</strong> <%= goal.progress_percentage.present? ? goal.progress_percentage.round(2) : 0 %>%</p>
           <div class="progress-chart">
             <canvas id="progressChart-week-<%= goal.id %>" data-progress="<%= goal.progress_percentage.present? ? goal.progress_percentage : 0 %>"></canvas>
@@ -77,7 +83,10 @@
       <% @this_months_goals.each do |goal| %>
         <div class="goal-card">
           <h3><%= goal.title %></h3>
-          <p><strong>学習時間:</strong> <%= goal.study_time %>分</p>
+          <% # 学習時間を時間と分に変換 %>
+          <% hours = goal.study_time / 60 %> <!-- 時間を算出 -->
+          <% minutes = goal.study_time % 60 %> <!-- 残りの分を算出 -->
+          <p><strong>学習時間:</strong> <%= hours %>時間 <%= minutes %>分</p>
           <p><strong>進捗度:</strong> <%= goal.progress_percentage.present? ? goal.progress_percentage.round(2) : 0 %>%</p>
           <div class="progress-chart">
             <canvas id="progressChart-month-<%= goal.id %>" data-progress="<%= goal.progress_percentage.present? ? goal.progress_percentage : 0 %>"></canvas>
