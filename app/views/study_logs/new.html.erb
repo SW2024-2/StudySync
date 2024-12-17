@@ -1,6 +1,7 @@
 <body id="learning-record-page">
   <h1>学習を記録する</h1>
 
+  <!-- エラーメッセージ表示 -->
   <% if @study_log.errors.any? %>
     <div class="error-messages">
       <h2>エラーが発生しました:</h2>
@@ -13,6 +14,7 @@
   <% end %>
 
   <%= form_with model: @study_log, local: true do |f| %>
+    <!-- 科目入力 -->
     <div>
       <%= f.label :subject, "科目" %>
       <%= f.text_field :subject %>
@@ -26,126 +28,116 @@
       <%= f.radio_button :study_time_method, 'timer', checked: @study_log.study_time_method == 'timer' %> タイマー
     </div>
 
-    <!-- 手動入力のフィールド -->
+    <!-- 手動入力フィールド -->
     <div id="manual-input-fields" style="display: none;">
       <%= f.label :study_time, "学習時間(分)" %>
-      <%= f.number_field :study_time %> <!-- 手動入力の時間 -->
+      <%= f.number_field :study_time %>
     </div>
 
-    <!-- タイマーとストップウォッチのUI -->
+    <!-- ストップウォッチとタイマーUI -->
     <div id="stopwatch-timer-fields" style="display: none;">
+      <!-- ストップウォッチ機能 -->
       <div id="stopwatch" style="display: none;">
-        <p>ストップウォッチ: <span id="stopwatch-time">0</span> 秒</p>
+        <p>ストップウォッチ: <span id="stopwatch-time">0:00</span></p>
         <button type="button" id="start-stopwatch">スタート</button>
         <button type="button" id="stop-stopwatch" style="display: none;">停止</button>
         <button type="button" id="complete-stopwatch" style="display: none;">完了</button>
       </div>
+
+      <!-- タイマー機能 -->
       <div id="timer" style="display: none;">
         <p>タイマー: <input type="number" id="timer-set-time" placeholder="分を入力" min="1"> 分</p>
+        <p>残り時間: <span id="timer-time">00:00</span></p>
         <button type="button" id="start-timer">スタート</button>
         <button type="button" id="stop-timer" style="display: none;">停止</button>
       </div>
     </div>
 
-    <%= f.hidden_field :stopwatch_time, value: @study_log.stopwatch_time %> <!-- ストップウォッチ時間 -->
-    <%= f.hidden_field :timer_time, value: @study_log.timer_time %> <!-- タイマー時間 -->
-    <%= f.hidden_field :study_time_display, value: @study_log.study_time_display %> <!-- 表示用の時間 -->
+    <!-- Hiddenフィールド: ストップウォッチやタイマー時間 -->
+    <%= f.hidden_field :stopwatch_time %>
+    <%= f.hidden_field :timer_time %>
+    <%= f.hidden_field :study_time_display %>
 
-
+    <!-- メモ入力 -->
     <div>
       <%= f.label :note, "メモ" %>
       <%= f.text_area :note %>
     </div>
 
+    <!-- 送信ボタン -->
     <div>
       <%= f.submit "記録する" %>
     </div>
   <% end %>
 
+  <!-- jQueryライブラリ -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     $(document).ready(function() {
-      // 学習時間記録方法変更時の処理
-      $("input[name='study_log[study_time_method]']").change(function() {
-        const method = $("input[name='study_log[study_time_method]']:checked").val();
-        
+      let stopwatchTime = 0, timerTime = 0, stopwatchInterval, timerInterval;
+
+      // 学習時間記録方法の表示切り替え
+      function toggleFields(method) {
+        $("#manual-input-fields, #stopwatch, #timer, #stopwatch-timer-fields").hide();
         if (method === 'manual') {
           $("#manual-input-fields").show();
-          $("#stopwatch-timer-fields").hide();
         } else if (method === 'stopwatch') {
-          $("#manual-input-fields").hide();
-          $("#stopwatch-timer-fields").show();
-          $("#stopwatch").show();
-          $("#timer").hide();
+          $("#stopwatch-timer-fields, #stopwatch").show();
         } else if (method === 'timer') {
-          $("#manual-input-fields").hide();
-          $("#stopwatch-timer-fields").show();
-          $("#stopwatch").hide();
-          $("#timer").show();
+          $("#stopwatch-timer-fields, #timer").show();
         }
+      }
+
+      $("input[name='study_log[study_time_method]']").change(function() {
+        toggleFields($(this).val());
       });
 
       // ストップウォッチ機能
-      let stopwatchTime = 0;
-      let stopwatchInterval;
-      
       $('#start-stopwatch').click(function() {
         stopwatchInterval = setInterval(function() {
           stopwatchTime++;
           let minutes = Math.floor(stopwatchTime / 60);
-          let seconds = stopwatchTime % 60;  // 秒の部分
-          $('#stopwatch-time').text(`${minutes}:${seconds.toString().padStart(2, '0')}`);  // 分:秒形式で表示
+          let seconds = stopwatchTime % 60;
+          $('#stopwatch-time').text(`${minutes}:${seconds.toString().padStart(2, '0')}`);
         }, 1000);
         $('#start-stopwatch').hide();
-        $('#stop-stopwatch').show();
-        $('#complete-stopwatch').show();
+        $('#stop-stopwatch, #complete-stopwatch').show();
       });
-      
+
       $('#stop-stopwatch').click(function() {
         clearInterval(stopwatchInterval);
         $('#start-stopwatch').show();
         $('#stop-stopwatch').hide();
-        $('#complete-stopwatch').show();
       });
-      
+
       $('#complete-stopwatch').click(function() {
-        // ストップウォッチの時間を秒単位で取得
-        let formattedTime = `${Math.floor(stopwatchTime / 60)}:${(stopwatchTime % 60).toString().padStart(2, '0')}`;  // 分:秒形式
-    
-        // 秒単位でhiddenフィールドに時間をセットする
-        $("input[name='study_log[stopwatch_time]']").val(stopwatchTime); // 秒単位で設定
-    
-        // 手動入力フィールドに時間をセット
-        $("input[name='study_log[study_time]']").val(stopwatchTime); // 秒単位で保存する
-    
-        // 表示用の時間を分:秒形式に設定
-        $("input[name='study_log[study_time_display]']").val(formattedTime); // 分:秒形式で表示用
-    
-        $('#manual-input-fields').show();
-        $('#stopwatch').hide();
+        clearInterval(stopwatchInterval);
+        $("input[name='study_log[stopwatch_time]']").val(stopwatchTime);
+        $("input[name='study_log[study_time]']").val(stopwatchTime);
+        $("input[name='study_log[study_time_display]']").val(
+          `${Math.floor(stopwatchTime / 60)}:${(stopwatchTime % 60).toString().padStart(2, '0')}`
+        );
+        toggleFields('manual');
       });
 
       // タイマー機能
-      let timerTime = 0;
-      let timerInterval;
-
       $('#start-timer').click(function() {
-        timerTime = $('#timer-set-time').val() * 60; // 入力された時間を秒に変換
-        if (timerTime <= 0) {
-          alert("時間を設定してください！");
+        const inputMinutes = parseInt($('#timer-set-time').val());
+        if (isNaN(inputMinutes) || inputMinutes <= 0) {
+          alert("有効な時間を入力してください！");
           return;
         }
-
+        timerTime = inputMinutes * 60;
         timerInterval = setInterval(function() {
           if (timerTime <= 0) {
             clearInterval(timerInterval);
             alert("タイマーが終了しました!");
-          } else {
-            timerTime--;
-            const minutes = Math.floor(timerTime / 60);
-            const seconds = timerTime % 60;
-            $('#timer-time').text(minutes.toString().padStart(2, '0') + ":" + seconds.toString().padStart(2, '0'));
+            return;
           }
+          timerTime--;
+          let minutes = Math.floor(timerTime / 60);
+          let seconds = timerTime % 60;
+          $('#timer-time').text(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
         }, 1000);
         $('#start-timer').hide();
         $('#stop-timer').show();
@@ -153,14 +145,9 @@
 
       $('#stop-timer').click(function() {
         clearInterval(timerInterval);
-        $('#start-timer').show();
-        $('#stop-timer').hide();
-
-        let minutes = Math.floor(timerTime / 60);
-        $("input[name='study_log[study_time]']").val(minutes);
-        $("input[name='study_log[timer_time]']").val(timerTime); // 秒単位で保存
-        $('#manual-input-fields').show();
-        $('#timer').hide();
+        $("input[name='study_log[study_time]']").val(Math.ceil(timerTime / 60));
+        $("input[name='study_log[timer_time]']").val(timerTime);
+        toggleFields('manual');
       });
     });
   </script>
