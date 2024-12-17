@@ -12,15 +12,19 @@ Rails.application.routes.draw do
 
   # リソース関連
   resources :users, only: [:new, :create, :edit, :update, :destroy]
-  resources :study_logs
+  
+  # コメントの一覧、作成、削除を許可
+  resources :study_logs do
+    resources :comments, only: [:index, :create, :destroy]
+  end
+  
   resources :reports do
     resources :goals
   end
 
-  resources :comments, only: [:create, :destroy]
   resources :likes, only: [:create, :destroy]
   resources :friendships, only: [:index, :create, :destroy]
-
+  
   # その他の個別ルート（不要）
   # 以下の個別ルートは削除できます
   # get 'study_logs/show'
