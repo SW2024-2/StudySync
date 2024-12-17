@@ -1,6 +1,6 @@
 class StudyLog < ApplicationRecord
   belongs_to :user
-  
+  has_many :comments, dependent: :destroy
 # 学習日をフォーマットして返す
 def formatted_study_date(format = '%Y/%m/%d')
   created_at.strftime(format)

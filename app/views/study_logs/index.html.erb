@@ -21,8 +21,7 @@
       </div>
       <!-- フッター部分 -->
       <div class="study-log-footer">
-        <!--<a href="#" class="comment-link">💬コメント</a>-->
-        <%= link_to '💬コメント', comments_path, class: 'comment-link' %>
+        <%= link_to '💬コメント', study_log_comments_path(study_log), class: 'comment-link' %>
         <a href="#" class="like-icon" data-linked="false">👍 いいね</a>
       </div>
       
@@ -51,7 +50,7 @@
       <!-- フッター部分 -->
 <!--      <div class="study-log-footer">-->
         <!--<a href="#" class="comment-link">💬コメント</a>-->
-<!--        <%= link_to '💬コメント', comments_path, class: 'comment-link' %>-->
+<!--        <%= link_to '💬コメント', study_log_comments_path(study_log), class: 'comment-link' %>-->
 <!--        <a href="#" class="like-icon" data-linked="false">👍 いいね</a>-->
 <!--      </div>-->
       

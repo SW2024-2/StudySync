@@ -1,0 +1,52 @@
+<div class="comment-page">
+  <!-- 学習ログ情報 -->
+  <div class="study-log-info">
+    <h3>学習記録</h3>
+    <span><strong>投稿者:</strong> <%= @study_log.user.name %></span>
+    <span><strong>投稿時間:</strong> <%= time_ago_in_words(@study_log.created_at) %>前</span>
+    
+    <p><strong>科目:</strong> <%= @study_log.subject %></p>
+    <p><strong>学習時間:</strong> <%= @study_log.study_time %>分</p>
+    <a href="#" data-linked="false">👍 いいね</a>
+  </div>
+  
+  <!-- コメント一覧 -->
+  <div class="comments">
+    <h4>コメント一覧</h4>
+    <% if @comments.any? %>
+      <% @comments.each do |comment| %>
+        <div class="comment">
+          <p>
+            <strong><%= comment.user.name %></strong>: <%= comment.content %>
+          </p>
+          <p>
+            <small><%= time_ago_in_words(comment.created_at) %>前</small>
+          </p>
+          <% if comment.user == current_user %>
+            <%= link_to '削除', study_log_comment_path(@study_log, comment), method: :delete, data: { confirm: 'コメントを削除しますか？' }, class: 'delete-comment-link' %>
+          <% end %>
+        </div>
+      <% end %>
+    <% else %>
+      <p>まだコメントはありません。</p>
+    <% end %>
+  </div>
+  
+  <% if logged_in? %>
+    <%= form_with(model: [@study_log, Comment.new], local: true) do |f| %>
+      <div>
+        <%= f.text_area :content, placeholder: 'コメントを入力してください', rows: 2 %>
+      </div>
+      <div>
+        <%= f.submit '送信', class: 'button' %>
+      </div>
+    <% end %>
+  <% else %>
+    <p>コメントを追加するには <%= link_to 'ログイン', login_form_path %> してください。</p>
+  <% end %>
+
+  <!-- 戻るリンク -->
+  <div class="back-link">
+    <%= link_to '戻る', study_logs_path, class: 'back-button' %>
+  </div>
+</div>

@@ -1,9 +1,10 @@
 class ApplicationController < ActionController::Base
-  helper_method :current_user  # ビューでも使えるようにする
+  helper_method :current_user , :logged_in? # ビューでも使えるようにする
 
   def current_user
     # セッションにユーザーIDがあれば、ログイン中のユーザーを取得
-    @current_user ||= User.find_by(id: session[:user_id])
+    #session[:user_id]をsession[:login_uid]に変更
+    @current_user ||= User.find_by(id: session[:login_uid])if session[:login_uid]
   end
 
   def logged_in?
