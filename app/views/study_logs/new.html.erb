@@ -35,33 +35,42 @@
       <div>
         <%= f.number_field :study_time_hours, min: 0, placeholder: "時間", style: "width: 50px;" %> 時間
         <%= f.number_field :study_time_minutes, min: 0, placeholder: "分", style: "width: 50px;" %> 分
+        <button type="button" id="reset-manual-inputs">リセット</button>
       </div>
     </div>
 
-    <!-- ストップウォッチとタイマーUI -->
-    <div id="stopwatch-timer-fields" style="display: none;">
-      <!-- ストップウォッチ機能 -->
-      <div id="stopwatch" style="display: none;">
-        <p>ストップウォッチ: <span id="stopwatch-time">0:00</span></p>
-        <button type="button" id="start-stopwatch">スタート</button>
-        <button type="button" id="stop-stopwatch" style="display: none;">停止</button>
-        <button type="button" id="complete-stopwatch" style="display: none;">完了</button>
-      </div>
+    <!-- ストップウォッチ機能 -->
+    <div id="stopwatch" style="display: none;">
+      <p>ストップウォッチ: 
+        <span id="stopwatch-time">00:00:00</span>
+      </p>
+      <button type="button" id="start-stopwatch">スタート</button>
+      <button type="button" id="stop-stopwatch" style="display: none;">停止</button>
+      <button type="button" id="restart-stopwatch" style="display: none;">再スタート</button>
+      <button type="button" id="complete-stopwatch" style="display: none;">完了</button>
+      <button type="button" id="reset-stopwatch" style="display: none;">リセット</button>
+    </div>
 
-      <!-- タイマー機能 -->
-      <div id="timer" style="display: none;">
-        <p>タイマー: <input type="number" id="timer-set-time" placeholder="分を入力" min="1"> 分</p>
-        <p>残り時間: <span id="timer-time">00:00</span></p>
-        <button type="button" id="start-timer">スタート</button>
-        <button type="button" id="stop-timer" style="display: none;">停止</button>
-        <button type="button" id="complete-timer" style="display: none;">完了</button>
-      </div>
+    <!-- タイマー機能 -->
+    <div id="timer" style="display: none;">
+      <p>タイマー設定: 
+        <input type="number" id="timer-set-hours" placeholder="時間" style="width: 50px;" min="0"> 時間
+        <input type="number" id="timer-set-minutes" placeholder="分" style="width: 50px;" min="0"> 分
+        <button type="button" id="reset-timer-inputs">リセット</button>
+      </p>
+      <p>残り時間: <span id="timer-time">00:00:00</span></p>
+      <button type="button" id="start-timer">スタート</button>
+      <button type="button" id="stop-timer" style="display: none;">停止</button>
+      <button type="button" id="restart-timer" style="display: none;">再スタート</button>
+      <button type="button" id="complete-timer" style="display: none;">完了</button>
+      <button type="button" id="reset-timer" style="display: none;">リセット</button>
     </div>
 
     <!-- Hiddenフィールド: ストップウォッチやタイマー時間 -->
     <%= f.hidden_field :stopwatch_time %>
     <%= f.hidden_field :timer_time %>
     <%= f.hidden_field :study_time %>
+    <%= f.hidden_field :stopwatch_time %>  <!-- ストップウォッチ時間（秒） -->
 
     <!-- メモ入力 -->
     <div>
@@ -80,6 +89,8 @@
   <script>
     $(document).ready(function() {
       let stopwatchTime = 0, timerTime = 0, stopwatchInterval, timerInterval;
+      let initialTimerTime = 0;  // タイマーの初期設定時間を保存
+      let actualTimerTime = 0;   // 実際の経過時間を保存
 
       // 学習時間記録方法の表示切り替え
       function toggleFields(method) {
@@ -96,66 +107,144 @@
       $("input[name='study_log[study_time_method]']").change(function() {
         toggleFields($(this).val());
       });
-
-      // ストップウォッチ機能
-      $('#start-stopwatch').click(function() {
-        stopwatchInterval = setInterval(function() {
-          stopwatchTime++;
-          let minutes = Math.floor(stopwatchTime / 60);
-          let seconds = stopwatchTime % 60;
-          $('#stopwatch-time').text(`${minutes}:${seconds.toString().padStart(2, '0')}`);
-        }, 1000);
-        $('#start-stopwatch').hide();
-        $('#stop-stopwatch, #complete-stopwatch').show();
-      });
-
-      $('#stop-stopwatch').click(function() {
-        clearInterval(stopwatchInterval);
-        $('#start-stopwatch').show();
-        $('#stop-stopwatch').hide();
-      });
-
-      $('#complete-stopwatch').click(function() {
-        clearInterval(stopwatchInterval);
-        $("input[name='study_log[study_time]']").val(Math.ceil(stopwatchTime / 60));
-        $("input[name='study_log[stopwatch_time]']").val(stopwatchTime);
-      });
+      
+        // ストップウォッチ機能
+        $("#start-stopwatch").click(function() {
+          stopwatchInterval = setInterval(function() {
+            stopwatchTime++;
+            const hours = Math.floor(stopwatchTime / 3600);
+            const minutes = Math.floor((stopwatchTime % 3600) / 60);
+            const seconds = stopwatchTime % 60;
+            $("#stopwatch-time").text(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+          }, 1000);
+          $(this).hide();
+          $("#stop-stopwatch").show();
+        });
+      
+        $("#stop-stopwatch").click(function() {
+          clearInterval(stopwatchInterval);
+          $(this).hide();
+          $("#restart-stopwatch, #complete-stopwatch, #reset-stopwatch").show();
+        });
+      
+        $("#restart-stopwatch").click(function() {
+          clearInterval(stopwatchInterval);
+          stopwatchInterval = setInterval(function() {
+            stopwatchTime++;
+            const hours = Math.floor(stopwatchTime / 3600);
+            const minutes = Math.floor((stopwatchTime % 3600) / 60);
+            const seconds = stopwatchTime % 60;
+            $("#stopwatch-time").text(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
+          }, 1000);
+          $(this).hide();
+          $("#stop-stopwatch").show();
+          $("#complete-stopwatch").hide();
+        });
+      
+        $("#reset-stopwatch").click(function() {
+          clearInterval(stopwatchInterval);
+          stopwatchTime = 0;
+          $("#stopwatch-time").text("00:00:00");
+          $("#restart-stopwatch, #complete-stopwatch, #reset-stopwatch").hide();
+          $("#start-stopwatch").show();
+        });
+      
+        // 完了ボタンをクリックしたときに学習時間を記録
+        $("#complete-stopwatch").click(function() {
+          // 時間を切り捨て（秒数を切り捨て）
+          const totalMinutes = Math.floor(stopwatchTime / 60);
+          
+          // 1分以上の場合のみ記録
+          if (totalMinutes >= 1) {
+            // 時間と分をフォームに入力（学習時間フィールドに記録）
+            $("input[name='study_log[study_time]']").val(totalMinutes);  // 学習時間（分）をセット
+            $("input[name='study_log[stopwatch_time]']").val(stopwatchTime);  // ストップウォッチの秒数も保存（オプション）
+      
+            // 他の必要な処理（例：フォーム送信等）を追加
+            alert(`学習時間として${totalMinutes}分が記録されました`);
+          } else {
+            alert("学習時間は1分以上でなければ記録できません。");
+          }
+        });
 
       // タイマー機能
-      $('#start-timer').click(function() {
-        const inputMinutes = parseInt($('#timer-set-time').val());
-        if (isNaN(inputMinutes) || inputMinutes <= 0) {
+      $("#start-timer").click(function() {
+        const inputHours = parseInt($("#timer-set-hours").val()) || 0;
+        const inputMinutes = parseInt($("#timer-set-minutes").val()) || 0;
+        initialTimerTime = inputHours * 3600 + inputMinutes * 60;  // 初期タイマー時間を保存
+        timerTime = initialTimerTime;
+
+        if (timerTime <= 0) {
           alert("有効な時間を入力してください！");
           return;
         }
-        timerTime = inputMinutes * 60;
-        $('#timer-time').text(`${inputMinutes}:00`);
+
+        actualTimerTime = 0; // タイマーがスタートする前に経過時間をリセット
+
         timerInterval = setInterval(function() {
-          timerTime--;
-          let minutes = Math.floor(timerTime / 60);
-          let seconds = timerTime % 60;
-          $('#timer-time').text(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
           if (timerTime <= 0) {
             clearInterval(timerInterval);
-            alert("タイマーが終了しました！");
+            alert("タイマーが終了しました！"); // アラートが終了後に処理
+            $("#stop-timer").hide();
+            $("#restart-timer, #complete-timer, #reset-timer").show();
+
+            // アラート後に学習時間として設定した時間を記録
+            const totalMinutes = Math.floor(actualTimerTime / 60); // 経過した時間を分単位で取得
+            $("input[name='study_log[study_time]']").val(totalMinutes); // 学習時間（分）をセット
+            $("input[name='study_log[timer_time]']").val(actualTimerTime); // 実際の経過時間（秒）をセット
+          } else {
+            timerTime--;
+            actualTimerTime++; // 経過時間をインクリメント
+            const hours = Math.floor(timerTime / 3600);
+            const minutes = Math.floor((timerTime % 3600) / 60);
+            const seconds = timerTime % 60;
+            $("#timer-time").text(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
           }
         }, 1000);
-        $('#start-timer').hide();
-        $('#stop-timer, #complete-timer').show();
+
+        $(this).hide();
+        $("#stop-timer").show();
       });
 
-      $('#stop-timer').click(function() {
+      $("#stop-timer").click(function() {
         clearInterval(timerInterval);
-        $('#start-timer').show();
-        $('#stop-timer').hide();
+        $(this).hide();
+        $("#restart-timer, #complete-timer, #reset-timer").show();
       });
 
-      $('#complete-timer').click(function() {
+      $("#reset-timer").click(function() {
         clearInterval(timerInterval);
-        const timeStudied = Math.ceil(timerTime / 60);
-        $("input[name='study_log[study_time]']").val(timeStudied);
-        $("input[name='study_log[timer_time]']").val(timerTime);
+        timerTime = 0;
+        actualTimerTime = 0; // 経過時間をリセット
+        $("#timer-time").text("00:00:00");
+        $(this).hide();
+        $("#start-timer").show();
       });
+
+      // 完了ボタンをクリックしたときに学習時間を記録
+      $("#complete-timer").click(function() {
+        const totalMinutes = Math.floor(actualTimerTime / 60);  // 経過した時間（分）を学習時間として設定
+        if (totalMinutes >= 1) {
+          $("input[name='study_log[study_time]']").val(totalMinutes);  // 学習時間（分）をセット
+          $("input[name='study_log[timer_time]']").val(actualTimerTime);  // 実際の経過時間（秒）を保存
+          alert(`学習時間として${totalMinutes}分が記録されました`);
+        } else {
+          alert("学習時間は1分以上でなければ記録できません。");
+        }
+      });
+
+      // リセットボタン
+      $("#reset-manual-inputs").click(function() {
+        $("input[name='study_log[study_time_hours]']").val('');
+        $("input[name='study_log[study_time_minutes]']").val('');
+      });
+
+      // タイマーリセットボタン
+      $("#reset-timer-inputs").click(function() {
+        $("#timer-set-hours").val('');
+        $("#timer-set-minutes").val('');
+      });
+
     });
   </script>
 </body>

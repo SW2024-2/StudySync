@@ -1,4 +1,3 @@
-
 class StudyLogsController < ApplicationController
   before_action :set_study_log, only: [:show, :edit, :update, :destroy]
   before_action :check_ownership, only: [:edit, :destroy]
@@ -44,8 +43,12 @@ class StudyLogsController < ApplicationController
   # 学習記録を更新
   def update
     if @study_log.update(study_log_params)
+      # タイマーが完了している場合、学習時間を計算
       @study_log.study_time = calculate_study_time(@study_log)
+
+      # 保存を一度だけ行う
       @study_log.save
+
       redirect_to root_path, notice: "学習記録が更新されました。"
     else
       flash.now[:alert] = "更新に失敗しました。入力内容を確認してください。"
@@ -79,7 +82,6 @@ class StudyLogsController < ApplicationController
     params.require(:study_log).permit(
       :subject, 
       :note, 
-      :study_time, 
       :study_time_method, 
       :stopwatch_time, 
       :timer_time, 
@@ -96,29 +98,29 @@ class StudyLogsController < ApplicationController
 
   # 学習時間の計算ロジック
   def calculate_study_time(study_log)
-    study_time = 0
-
     case study_log.study_time_method
     when 'manual'
-      # 時間と分を使って学習時間を計算
+      # 手動の場合は、入力された時間（時間、分）で計算
       hours = study_log.study_time_hours.to_i
       minutes = study_log.study_time_minutes.to_i
-      study_time = (hours * 60) + minutes
+      study_time = (hours * 60) + minutes # 総分数
     when 'stopwatch'
-      # ストップウォッチの時間を使って学習時間を計算
-      study_time = study_log.stopwatch_time.to_i / 60 if study_log.stopwatch_time.present?
+      # ストップウォッチ時間が設定されている場合（秒単位）
+      stopwatch_seconds = study_log.stopwatch_time.to_i
+      study_time = stopwatch_seconds / 60 # 分単位に切り捨て
     when 'timer'
-      # タイマーの時間を使って学習時間を計算
-      if study_log.timer_time.present?
-        if study_log.timer_remaining.present?
-          study_time = (study_log.timer_time.to_i / 60) - (study_log.timer_remaining.to_i / 60)
-          study_time = [study_time, 0].max
-        else
-          study_time = study_log.timer_time.to_i / 60
-        end
+      # タイマーが完了している場合、残り時間が0であれば設定時間を学習時間にする
+      if study_log.timer_remaining.to_i == 0
+        study_time = study_log.timer_time.to_i / 60 # タイマー設定時間をそのまま使用
+      else
+        # タイマー途中で停止した場合、設定時間から残り時間を引いた分を学習時間にする
+        study_time = (study_log.timer_time.to_i - study_log.timer_remaining.to_i) / 60
       end
+    else
+      study_time = 0 # 未設定の場合はゼロ
     end
-
-    study_time
+  
+    study_time # 分単位の学習時間
   end
 end
+

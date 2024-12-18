@@ -89,8 +89,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
 
   add_foreign_key "comments", "study_logs"
   add_foreign_key "comments", "users"
+  add_foreign_key "friendships", "friends"
   add_foreign_key "friendships", "users"
-  add_foreign_key "friendships", "users", column: "friend_id"
   add_foreign_key "goals", "reports"
   add_foreign_key "goals", "users"
   add_foreign_key "likes", "study_logs"
