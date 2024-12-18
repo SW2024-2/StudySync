@@ -17,16 +17,17 @@ class TopController < ApplicationController
   # ログイン処理
   def login
     user = User.find_by(uid: params[:uid])
-
-    if user && BCrypt::Password.new(user.password_digest).is_password?(params[:password]) # 正しいパスワードチェック
-      reset_session # セッション固定化攻撃を防ぐためセッションをリセット
-      session[:login_uid] = user.id # 新しいセッションにユーザーIDを保存
+  
+    if user && user.authenticate(params[:password]) # `authenticate` メソッドを使用して検証
+      reset_session
+      session[:login_uid] = user.id
       redirect_to study_logs_path, notice: "ログインに成功しました。"
     else
       flash.now[:alert] = "ユーザーIDまたはパスワードが間違っています。"
-      render :error, status: :unprocessable_entity # ログインフォームに戻す
+      render :error, status: :unprocessable_entity
     end
   end
+
 
   # ログアウト処理
   def logout

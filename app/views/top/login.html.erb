@@ -1,8 +1,15 @@
 <% if flash[:notice] %>
-  <div class="notice">
+  <div class="alert alert-success">
     <%= flash[:notice] %>
   </div>
 <% end %>
+
+<% if flash[:alert] %>
+  <div class="alert alert-danger">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+
 
 <body id="login-page">
   <h1>ログイン</h1>
@@ -13,9 +20,9 @@
       <%= text_field_tag :uid %>
     </div>
     <div class="password-container">
-      <%= label_tag :password_digest, "パスワード" %>
+      <%= label_tag :password, "パスワード" %>
       <div class="password-input-wrapper">
-        <%= password_field_tag :password_digest, nil, id: 'password_field' %>
+        <%= password_field_tag :password, nil, id: 'password_field' %>
         <button type="button" id="toggle-password" class="toggle-password">パスワードを表示</button>
       </div>
     </div>
