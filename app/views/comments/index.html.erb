@@ -7,7 +7,15 @@
     
     <p><strong>科目:</strong> <%= @study_log.subject %></p>
     <p><strong>学習時間:</strong> <%= @study_log.study_time %>分</p>
-    <a href="#" data-linked="false">👍 いいね</a>
+
+    <%= form_with url: study_log_like_path(@study_log), method: @study_log.liked_by?(current_user) ? :delete : :post, local: true do %>
+      <a href="#" onclick="this.closest('form').submit(); return false;"
+         class="like-icon"
+         style="<%= @study_log.liked_by?(current_user) ? 'color: red;' : '' %>">
+        <%= @study_log.liked_by?(current_user) ? '❤️ いいね' : '👍 いいね' %>
+      </a>
+    <% end %>
+    <span class="like-count"><%= @study_log.likes.count %></span>
   </div>
   
   <!-- コメント一覧 -->
