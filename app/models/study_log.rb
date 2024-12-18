@@ -1,6 +1,13 @@
 class StudyLog < ApplicationRecord
   belongs_to :user
   has_many :comments, dependent: :destroy
+  has_many :likes, dependent: :destroy
+  has_many :liked_users, through: :likes, source: :user
+# 学習日をフォーマットして返す
+def formatted_study_date(format = '%Y/%m/%d')
+  created_at.strftime(format)
+end
+
 
   # 学習日をフォーマットして返す
   def formatted_study_date(format = '%Y/%m/%d')
@@ -55,5 +62,10 @@ class StudyLog < ApplicationRecord
     minutes = (time_in_seconds / 60).floor
     seconds = time_in_seconds % 60
     format("%02d:%02d", minutes, seconds)
+  end
+  
+  # ユーザーがこの投稿を「いいね」しているかを判定
+  def liked_by?(user)
+    likes.exists?(user: user)
   end
 end

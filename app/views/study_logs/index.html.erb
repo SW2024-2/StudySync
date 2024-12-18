@@ -1,6 +1,4 @@
-<!-- home画面 -->
 <div class="study-logs">
-  <!-- 全ユーザー表示 -->
   <% @study_logs.each do |study_log| %>
     <div class="study-log">
       <!-- ヘッダー部分 -->
@@ -18,49 +16,26 @@
       <div class="study-log-body">
         <h3 class="subject"><%= study_log.subject %></h3>
         <h3 class="study-time">
-          <% hours = (study_log.study_time / 60).floor %> <!-- 時間部分 -->
-          <% minutes = study_log.study_time % 60 %> <!-- 分部分 -->
-          <%= "#{hours}時間 #{minutes}分" %> <!-- 時間と分を表示 -->
+          <% hours = (study_log.study_time / 60).floor %>
+          <% minutes = study_log.study_time % 60 %>
+          <%= "#{hours}時間 #{minutes}分" %>
         </h3>
       </div>
       <!-- フッター部分 -->
       <div class="study-log-footer">
         <%= link_to '💬コメント', study_log_comments_path(study_log), class: 'comment-link' %>
-        <a href="#" class="like-icon" data-linked="false">👍 いいね</a>
+        <%= form_with url: study_log_like_path(study_log), method: study_log.liked_by?(current_user) ? :delete : :post, local: true do %>
+          <a href="#" onclick="this.closest('form').submit(); return false;"
+             class="like-icon"
+             style="<%= study_log.liked_by?(current_user) ? 'color: red;' : '' %>">
+            <%= study_log.liked_by?(current_user) ? '❤️ いいね' : '👍 いいね' %>
+          </a>
+        <% end %>
+        <span class="like-count"><%= study_log.likes.count %></span>
       </div>
-      
     </div>
   <% end %>
 </div>
-
-<!--<div class="study-logs">-->
-  <!-- フレンドだけの表示 -->
-<!--  <% @study_logs.each do |study_log| %>-->
-<!--    <div class="study-log">-->
-      <!-- ヘッダー部分 -->
-<!--      <div class="study-log-header">-->
-<!--        <span class="user-name"><%= study_log.user.name %></span>-->
-<!--        <span class="timestamp"><%= time_ago_in_words(study_log.created_at) %>前</span>-->
-<!--        <div class="action-links">-->
-<!--          <%= link_to '削除', study_log_path(study_log), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-link' %>>
-<!--          <%= link_to '編集', edit_study_log_path(study_log), class: 'edit-link' %>-->
-<!--        </div>-->
-<!--      </div>-->
-      <!-- 本文部分 -->
-<!--      <div class="study-log-body">-->
-<!--        <h3 class="subject"><%= study_log.subject %></h3>-->
-<!--        <h3 class="study-time"><%= study_log.study_time %>分</h3>-->
-<!--      </div>-->
-      <!-- フッター部分 -->
-<!--      <div class="study-log-footer">-->
-        <!--<a href="#" class="comment-link">💬コメント</a>-->
-<!--        <%= link_to '💬コメント', study_log_comments_path(study_log), class: 'comment-link' %>-->
-<!--        <a href="#" class="like-icon" data-linked="false">👍 いいね</a>-->
-<!--      </div>-->
-      
-<!--    </div>-->
-<!--  <% end %>-->
-<!--</div>-->
 
 <!-- フッターのメニュー -->
 <div class="footer-menu">
@@ -69,5 +44,3 @@
   <%= link_to 'フレンド一覧', friendships_path, class: 'footer-link' %>
   <%= link_to "ログアウト", logout_path, class: 'footer-link' %>
 </div>
-
-<script src="application.js"><script/>

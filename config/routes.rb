@@ -14,8 +14,10 @@ Rails.application.routes.draw do
   resources :users, only: [:new, :create, :edit, :update, :destroy]
   
   # コメントの一覧、作成、削除を許可
+  #いいねのエンドポイントの追加
   resources :study_logs do
     resources :comments, only: [:index, :create, :destroy]
+    resource :like, only: [:create, :destroy]
   end
   
   resources :reports do

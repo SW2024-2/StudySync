@@ -10,7 +10,7 @@ class User < ApplicationRecord
 
   # いいねとの関連（1対多）
   has_many :likes, dependent: :destroy
-
+  has_many :liked_study_logs, through: :likes, source: :study_log
   # コメントとの関連（1対多）
   has_many :comments, dependent: :destroy
 
