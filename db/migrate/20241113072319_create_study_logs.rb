@@ -8,7 +8,6 @@ class CreateStudyLogs < ActiveRecord::Migration[7.1]
       t.integer :study_time_minutes # 分
       t.integer :study_time # 学習時間（計算された結果として保存する場合）
       t.string :study_time_method # 学習方法（手動、ストップウォッチ、タイマー）
-      t.integer :stopwatch_time # ストップウォッチの時間
       t.integer :stopwatch_time, default: 0 # ストップウォッチ時間（秒）デフォルト0
       t.integer :timer_time # タイマーの時間
       t.integer :timer_remaining # タイマー残り時間

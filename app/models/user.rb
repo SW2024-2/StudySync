@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_secure_password
   # 学習ログとの関連（1対多）
   has_many :study_logs, dependent: :destroy
 
@@ -24,4 +25,9 @@ class User < ApplicationRecord
   # 友達として追加された場合（逆方向の関連）
   has_many :inverse_friendships, class_name: "Friendship", foreign_key: "friend_id", dependent: :destroy
   has_many :inverse_friends, through: :inverse_friendships, source: :user
+  
+  validates :name, presence: true, length: { maximum: 50 } 
+  validates :email, presence: true
+  validates :password_digest, presence: true,length: { maximum: 30 } 
+  validates :uid, presence: true, length: { maximum: 30 } 
 end

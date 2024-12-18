@@ -4,6 +4,17 @@
   </div>
 <% end %>
 
+<% if @user.errors.any? %>
+  <div class="error-messages">
+    <h2>以下のエラーがあります:</h2>
+    <ul>
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <body id="signup-page">
   <h1>新規ユーザー登録</h1>
   
@@ -21,9 +32,9 @@
       <%= f.text_field :uid %>
     </div>
     <div class="password-container">
-      <%= label_tag :password_digest, "パスワード" %>
+      <%= f.label :password, "パスワード" %>
       <div class="password-input-wrapper">
-        <%= password_field_tag :password_digest, nil, id: 'password_field' %>
+        <%= f.password_field :password, id: 'password_field' %>
         <button type="button" id="toggle-password" class="toggle-password">パスワードを表示</button>
       </div>
     </div>
@@ -33,7 +44,8 @@
   <% end %>
   
   <%= link_to 'ログイン画面に戻る', login_path, style: 'margin-left: 400px;' %>
-    <script>
+  
+  <script>
     document.getElementById('toggle-password').addEventListener('click', function() {
       var passwordField = document.getElementById('password_field');
       if (passwordField.type === 'password') {
