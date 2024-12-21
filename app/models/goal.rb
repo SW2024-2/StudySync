@@ -53,4 +53,7 @@ class Goal < ApplicationRecord
     # 最大100%を超えないようにする
     [progress, 100].min
   end
+  
+   validates :title, presence: true, length: { maximum: 255 }
+   validates :study_time, presence: true, numericality: { only_integer: true, greater_than: 0 }
 end
