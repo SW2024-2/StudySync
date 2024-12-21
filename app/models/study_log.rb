@@ -3,11 +3,6 @@ class StudyLog < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :likes, dependent: :destroy
   has_many :liked_users, through: :likes, source: :user
-# 学習日をフォーマットして返す
-def formatted_study_date(format = '%Y/%m/%d')
-  created_at.strftime(format)
-end
-
 
   # 学習日をフォーマットして返す
   def formatted_study_date(format = '%Y/%m/%d')
@@ -67,5 +62,49 @@ end
   # ユーザーがこの投稿を「いいね」しているかを判定
   def liked_by?(user)
     likes.exists?(user: user)
+  end
+
+  # バリデーションの追加
+  validates :subject, presence: true # 科目は必須
+  validates :study_time_method, presence: true # 学習方法は必須
+
+  validate :study_time_required_for_manual_input, if: :manual_input?
+  validate :study_time_required_for_stopwatch, if: :stopwatch_input?
+  validate :study_time_required_for_timer, if: :timer_input?
+
+  # 手動入力かどうかを判定するメソッド
+  def manual_input?
+    study_time_method == '手動'
+  end
+
+  def stopwatch_input?
+    study_time_method == 'ストップウォッチ'
+  end
+
+  def timer_input?
+    study_time_method == 'タイマー'
+  end
+
+  # 手動入力時に学習時間が入力されていない場合にエラーを追加
+  def study_time_required_for_manual_input
+    if study_time_hours.blank? && study_time_minutes.blank?
+      errors.add(:study_time, "は手動入力時に時間または分を入力してください。")
+    elsif study_time_hours.to_i <= 0 && study_time_minutes.to_i <= 0
+      errors.add(:study_time, "は1分以上で入力してください。")
+    end
+  end
+
+  # ストップウォッチ入力時に時間が0秒でないことを確認
+  def study_time_required_for_stopwatch
+    if stopwatch_time.to_i <= 0
+      errors.add(:stopwatch_time, "は0秒以上である必要があります。")
+    end
+  end
+
+  # タイマー入力時にタイマー時間または残り時間が正しいことを確認
+  def study_time_required_for_timer
+    if timer_time.to_i <= 0 && timer_remaining.to_i <= 0
+      errors.add(:timer_time, "は正しいタイマー時間または残り時間を入力してください。")
+    end
   end
 end
