@@ -56,7 +56,6 @@ class Goal < ApplicationRecord
   
      # バリデーション
   validates :title, presence: true, length: { maximum: 255 }
-  validates :study_time, numericality: { only_integer: true, greater_than: 0 }
   validate :study_time_must_be_at_least_one_minute
 
   # カスタムバリデーション

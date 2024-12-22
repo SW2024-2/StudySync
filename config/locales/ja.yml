@@ -1,0 +1,14 @@
+ja:
+  activerecord:
+    errors:
+      messages:
+        blank: "を入力してください"  # 共通のエラーメッセージ
+        greater_than: "は1以上でなければなりません"  # 数値が1以上でなければならない場合のエラーメッセージ
+  attributes:
+    user:
+      name: "名前"
+      email: "メールアドレス"
+      uid: "ID"
+      password: "パスワード"
+    goal:
+      study_time: "学習時間"  # goalモデルのstudy_timeに対応する日本語ラベルを追加
