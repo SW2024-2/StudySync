@@ -1,5 +1,6 @@
 class StudyLog < ApplicationRecord
   belongs_to :user
+  belongs_to :subject  # Subjectとの関連を追加
   has_many :comments, dependent: :destroy
   has_many :likes, dependent: :destroy
   has_many :liked_users, through: :likes, source: :user
@@ -44,11 +45,16 @@ class StudyLog < ApplicationRecord
     where(user: user).sum(:study_time)
   end
 
-  # 目標に対する進捗度を計算
+  # 目標に対する学習時間の合計を計算
   def self.total_study_time_for_goal(user, goal)
     return 0 if goal.nil?
 
-    where(user: user, created_at: goal.created_at..Time.current).sum(:study_time)
+    # goal.subject_ids を使って目標に関連する科目を抽出
+    subject_ids = goal.subject_ids
+
+    # 学習時間の合計を科目ごとに取得
+    where(user: user, subject_id: subject_ids)
+      .sum(:study_time)
   end
 
   # 学習時間を分:秒の形式で表示

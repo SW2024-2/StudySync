@@ -1,38 +1,65 @@
 <body id="learning-record-page">
 
-<% if @goal.errors.any? %>
-  <ul>
-    <% @goal.errors.full_messages.each do |message| %>
-      <li><%= message %></li>
-    <% end %>
-  </ul>
-<% end %>
+  <% if @goal.errors.any? %>
+    <ul>
+      <% @goal.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
 
-<h1>目標を設定する</h1>
+  <h1>目標を設定する</h1>
 
-<%= form_with model: @goal, url: report_goals_path(@report), local: true do |f| %>  <!-- ここは f に変更 -->
-  <div>
-    <%= f.label :title, "目標タイトル" %>
-    <%= f.text_field :title, value: @goal.title %> <!-- Pre-populate title if needed -->
-  </div>
-  
-  <!-- 時間と分を別々に入力 -->
-  <div>
-    <%= f.label :title, "学習時間" %>
-    <%= f.number_field :study_time_hours, min: 0, placeholder: "時間", style: "width: 50px;" %> 時間  <!-- ここは f に変更 -->
-    <%= f.number_field :study_time_minutes, min: 0, placeholder: "分", style: "width: 50px;" %> 分  <!-- ここは f に変更 -->
-  </div>
-  
-  <div>
-    <%= f.label :period, "目標期間" %> <!-- Add period field if needed -->
-    <%= f.select :period, ['daily', 'weekly', 'monthly'], prompt: '選択してください' %>
-  </div>
+  <%= form_with(model: @goal, local: true, url: report_goals_path(@report), html: { id: 'goal-form' }) do |form| %>
+    <div>
+      <%= form.label :title, "タイトル" %>
+      <%= form.text_field :title, id: 'goal_title' %>
+    </div>
 
-  <div>
-    <%= f.submit "目標を設定" %>
-  </div>
-<% end %>
+    <!-- 時間と分を別々に入力 -->
+    <div>
+      <%= form.label :study_time_hours, "学習時間" %>
+      <%= form.number_field :study_time_hours, min: 0, placeholder: "時間", style: "width: 50px;" %> 時間
+      <%= form.number_field :study_time_minutes, min: 0, placeholder: "分", style: "width: 50px;" %> 分
+    </div>
 
-<%= link_to '戻る', report_goals_path(@report), style: 'margin-left: 400px;' %>
+    <div>
+      <%= form.label :period, "期間" %>
+      <%= form.select :period, options_for_select([['今日', 'daily'], ['今週', 'weekly'], ['今月', 'monthly']]) %>
+    </div>
+
+    <div>
+      <%= form.label :subjects %>
+      <%= form.collection_check_boxes :subject_ids, Subject.all, :id, :name %> <!-- この部分が重要です -->
+    </div>
+
+    <div>
+      <%= form.submit "目標を設定", id: 'submit-btn' %>
+    </div>
+  <% end %>
+
+  <%= link_to '戻る', report_goals_path(@report), style: 'margin-left: 400px;' %>
+
+  <!-- JavaScriptのコード -->
+  <script>
+    document.getElementById('goal-form').addEventListener('submit', function(event) {
+      var titleField = document.getElementById('goal_title');
+      var selectedSubjects = [];
+      document.querySelectorAll('input[name="goal[subject_ids][]"]:checked').forEach(function(checkbox) {
+        selectedSubjects.push(checkbox.nextElementSibling.innerText);
+      });
+
+      // タイトルが空で、科目が選択されている場合、科目名をタイトルとして設定
+      if (!titleField.value && selectedSubjects.length > 0) {
+        titleField.value = selectedSubjects.join(', ');
+      }
+
+      // タイトルが空かつ科目が選択されていない場合、警告を表示
+      if (!titleField.value) {
+        alert('タイトルを入力するか、科目を選択してください。');
+        event.preventDefault();
+      }
+    });
+  </script>
 
 </body>

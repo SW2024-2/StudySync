@@ -14,7 +14,10 @@
       </div>
       <!-- 本文部分 -->
       <div class="study-log-body">
-        <h3 class="subject"><%= study_log.subject %></h3>
+        <!-- 科目名を表示 -->
+        <h3 class="subject"><%= study_log.subject.name %></h3>
+        
+        <!-- 学習時間を表示 -->
         <h3 class="study-time">
           <% hours = (study_log.study_time / 60).floor %>
           <% minutes = study_log.study_time % 60 %>

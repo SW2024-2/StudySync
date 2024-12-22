@@ -32,6 +32,8 @@ Rails.application.routes.draw do
     end
   end
   
+  resources :subjects
+  
   # その他の個別ルート（不要）
   # 以下の個別ルートは削除できます
   # get 'study_logs/show'

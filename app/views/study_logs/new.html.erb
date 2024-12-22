@@ -14,10 +14,13 @@
   <% end %>
 
   <%= form_with model: @study_log, local: true do |f| %>
-    <!-- 科目入力 -->
+    <!-- 科目選択 -->
     <div>
       <%= f.label :subject, "科目" %>
-      <%= f.text_field :subject %>
+      <%= f.collection_select :subject_id, @subjects, :id, :name, prompt: "選択してください" %>
+      <br>
+      <%= link_to '科目設定ページ', new_subject_path(return_to: new_study_log_path) %>
+
     </div>
 
     <!-- 学習時間記録方法の選択 -->
@@ -174,77 +177,54 @@
         initialTimerTime = inputHours * 3600 + inputMinutes * 60;  // 初期タイマー時間を保存
         timerTime = initialTimerTime;
 
-        if (timerTime <= 0) {
-          alert("有効な時間を入力してください！");
-          return;
-        }
-
-        actualTimerTime = 0; // タイマーがスタートする前に経過時間をリセット
-
         timerInterval = setInterval(function() {
-          if (timerTime <= 0) {
-            clearInterval(timerInterval);
-            alert("タイマーが終了しました！"); // アラートが終了後に処理
-            $("#stop-timer").hide();
-            $("#restart-timer, #complete-timer, #reset-timer").show();
+          const hours = Math.floor(timerTime / 3600);
+          const minutes = Math.floor((timerTime % 3600) / 60);
+          const seconds = timerTime % 60;
+          $("#timer-time").text(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
 
-            // アラート後に学習時間として設定した時間を記録
-            const totalMinutes = Math.floor(actualTimerTime / 60); // 経過した時間を分単位で取得
-            $("input[name='study_log[study_time]']").val(totalMinutes); // 学習時間（分）をセット
-            $("input[name='study_log[timer_time]']").val(actualTimerTime); // 実際の経過時間（秒）をセット
+          if (timerTime === 0) {
+            clearInterval(timerInterval);
+            alert("タイマーが終了しました！");
           } else {
             timerTime--;
-            actualTimerTime++; // 経過時間をインクリメント
-            const hours = Math.floor(timerTime / 3600);
-            const minutes = Math.floor((timerTime % 3600) / 60);
-            const seconds = timerTime % 60;
-            $("#timer-time").text(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
           }
         }, 1000);
 
         $(this).hide();
         $("#stop-timer").show();
+        $("#reset-timer").show();
       });
 
       $("#stop-timer").click(function() {
         clearInterval(timerInterval);
         $(this).hide();
-        $("#restart-timer, #complete-timer, #reset-timer").show();
+        $("#restart-timer").show();
+        $("#complete-timer").show();
+      });
+
+      $("#restart-timer").click(function() {
+        timerTime = initialTimerTime;
+        $(this).hide();
+        $("#stop-timer").show();
+        $("#complete-timer").hide();
+        $("#reset-timer").show();
       });
 
       $("#reset-timer").click(function() {
         clearInterval(timerInterval);
         timerTime = 0;
-        actualTimerTime = 0; // 経過時間をリセット
         $("#timer-time").text("00:00:00");
-        $(this).hide();
+        $("#reset-timer").hide();
         $("#start-timer").show();
       });
 
-      // 完了ボタンをクリックしたときに学習時間を記録
       $("#complete-timer").click(function() {
-        const totalMinutes = Math.floor(actualTimerTime / 60);  // 経過した時間（分）を学習時間として設定
-        if (totalMinutes >= 1) {
-          $("input[name='study_log[study_time]']").val(totalMinutes);  // 学習時間（分）をセット
-          $("input[name='study_log[timer_time]']").val(actualTimerTime);  // 実際の経過時間（秒）を保存
-          alert(`学習時間として${totalMinutes}分が記録されました`);
-        } else {
-          alert("学習時間は1分以上でなければ記録できません。");
-        }
+        // タイマーの時間を学習時間に設定
+        const totalMinutes = Math.floor(initialTimerTime / 60);  // 初期タイマー時間を分に換算
+        $("input[name='study_log[study_time]']").val(totalMinutes);
+        alert(`学習時間として${totalMinutes}分が記録されました`);
       });
-
-      // リセットボタン
-      $("#reset-manual-inputs").click(function() {
-        $("input[name='study_log[study_time_hours]']").val('');
-        $("input[name='study_log[study_time_minutes]']").val('');
-      });
-
-      // タイマーリセットボタン
-      $("#reset-timer-inputs").click(function() {
-        $("#timer-set-hours").val('');
-        $("#timer-set-minutes").val('');
-      });
-
     });
   </script>
 </body>

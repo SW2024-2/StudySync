@@ -2,7 +2,6 @@ class CreateStudyLogs < ActiveRecord::Migration[7.1]
   def change
     create_table :study_logs do |t|
       t.references :user, null: false, foreign_key: true # ユーザーとの関連
-      t.string :subject # 科目
       t.text :note # ノート
       t.integer :study_time_hours # 時間
       t.integer :study_time_minutes # 分
@@ -11,6 +10,7 @@ class CreateStudyLogs < ActiveRecord::Migration[7.1]
       t.integer :stopwatch_time, default: 0 # ストップウォッチ時間（秒）デフォルト0
       t.integer :timer_time # タイマーの時間
       t.integer :timer_remaining # タイマー残り時間
+      t.integer :subject_id
 
       t.timestamps
     end

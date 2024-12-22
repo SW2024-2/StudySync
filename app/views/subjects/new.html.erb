@@ -1,0 +1,11 @@
+<!-- app/views/subjects/new.html.erb -->
+<h1>新しい科目の作成</h1>
+<%= form_with model: @subject, url: subjects_path do |form| %>
+  <div>
+    <%= form.label :name, "科目名" %>
+    <%= form.text_field :name %>
+  </div>
+  <div>
+    <%= form.submit "作成" %>
+  </div>
+<% end %>

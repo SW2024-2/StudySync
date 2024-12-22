@@ -29,21 +29,20 @@ class GoalsController < ApplicationController
   end
 
   def create
-    if @report.nil?
-      @report = current_user.reports.create(title: "新しいレポート")
-    end
+    @report = Report.find(params[:report_id])
     @goal = @report.goals.new(goal_params)
     @goal.user = current_user
-
+  
     # 学習時間を時間と分を合計して保存
-    @goal.study_time = calculate_total_study_time(@goal.study_time_hours.to_i, @goal.study_time_minutes.to_i)
-
     if @goal.save
       redirect_to report_goals_path(@report), notice: '目標が作成されました'
     else
-      render :new
+      render :new, alert: '目標の作成に失敗しました'
     end
   end
+
+
+
 
   def edit
   end
@@ -51,7 +50,7 @@ class GoalsController < ApplicationController
   def update
     # 時間と分を合計して学習時間を計算
     total_study_time = (@goal.study_time_hours.to_i * 60) + @goal.study_time_minutes.to_i
-  
+
     # 学習時間を更新
     if @goal.update(goal_params.merge(study_time: total_study_time))
       redirect_to report_goals_path(@goal.report), notice: '目標が更新されました。'
@@ -60,8 +59,6 @@ class GoalsController < ApplicationController
     end
   end
 
-
-
   def destroy
     @goal.destroy
     redirect_to report_goals_path(@report), notice: '目標が削除されました。'
@@ -69,9 +66,10 @@ class GoalsController < ApplicationController
 
   private
 
-  def goal_params
-    params.require(:goal).permit(:title, :study_time_hours, :study_time_minutes, :period)
-  end
+def goal_params
+  params.require(:goal).permit(:title, :study_time_hours, :study_time_minutes, :period, subject_ids: [])
+end
+
 
 
   def set_report

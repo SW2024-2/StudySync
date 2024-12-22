@@ -1,8 +1,20 @@
-<h1><%= @study_log.subject %></h1>
+<h1><%= @study_log.subject.name %></h1>
+
 <p>
   学習時間: 
-  <%= "#{@study_log.study_time / 60}時間 #{@study_log.study_time % 60}分" %>
+  <% hours = @study_log.study_time / 60 %>
+  <% minutes = @study_log.study_time % 60 %>
+  <% if hours > 0 && minutes > 0 %>
+    <%= "#{hours}時間 #{minutes}分" %>
+  <% elsif hours > 0 %>
+    <%= "#{hours}時間" %>
+  <% elsif minutes > 0 %>
+    <%= "#{minutes}分" %>
+  <% else %>
+    <%= "0分" %> <!-- 両方0の場合 -->
+  <% end %>
 </p>
+
 <p>メモ: <%= @study_log.note %></p>
 <p>作成日: <%= @study_log.created_at.strftime('%Y年%m月%d日 %H:%M') %></p>
 

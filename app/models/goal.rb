@@ -1,6 +1,7 @@
 class Goal < ApplicationRecord
   belongs_to :user
   belongs_to :report
+  has_and_belongs_to_many :subjects  # 科目との多対多の関連付け
 
   # 仮の属性を定義
   attr_accessor :study_time_hours, :study_time_minutes
@@ -41,8 +42,9 @@ class Goal < ApplicationRecord
                              [Time.zone.now, Time.zone.now] # デフォルト処理
                            end
 
-    # 進捗度を計算するための総学習時間を取得
-    total_study_time = StudyLog.where(user: user, created_at: start_date..end_date).sum(:study_time)
+    # 進捗度を計算するための科目ごとの学習時間を取得
+    subject_ids = subjects.pluck(:id)  # 関連する科目IDを取得
+    total_study_time = StudyLog.where(user: user, subject_id: subject_ids, created_at: start_date..end_date).sum(:study_time)
 
     # 学習時間が0の場合、進捗度を 0% とする
     return 0 if study_time.zero?
@@ -57,6 +59,7 @@ class Goal < ApplicationRecord
   # バリデーション
   validate :study_time_must_be_at_least_one_minute
   validate :custom_validations
+  validates :subjects, presence: true, length: { minimum: 1 }
 
   # カスタムバリデーション
   def custom_validations

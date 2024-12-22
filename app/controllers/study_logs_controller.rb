@@ -19,6 +19,7 @@ class StudyLogsController < ApplicationController
   # 新規作成フォーム
   def new
     @study_log = StudyLog.new
+    @subjects = Subject.all  # @subjectsに全ての科目を取得して渡す
   end
 
   # 学習記録を作成
@@ -32,18 +33,20 @@ class StudyLogsController < ApplicationController
     if @study_log.save
       redirect_to @study_log, notice: "学習記録が作成されました。"
     else
+      @subjects = Subject.all  # 失敗時にも科目を再設定する
       render :new
     end
   end
 
   # 学習記録編集フォーム
   def edit
+    @subjects = Subject.all  # 編集時にも科目を取得
   end
 
   # 学習記録を更新
   def update
     if @study_log.update(study_log_params)
-      # タイマーが完了している場合、学習時間を計算
+      # タイマーが完了している場合、学習時間を再計算
       @study_log.study_time = calculate_study_time(@study_log)
 
       # 保存を一度だけ行う
@@ -51,6 +54,7 @@ class StudyLogsController < ApplicationController
 
       redirect_to root_path, notice: "学習記録が更新されました。"
     else
+      @subjects = Subject.all  # 更新失敗時にも科目を再設定する
       flash.now[:alert] = "更新に失敗しました。入力内容を確認してください。"
       render :edit
     end
@@ -80,7 +84,7 @@ class StudyLogsController < ApplicationController
   # Strong Parameters
   def study_log_params
     params.require(:study_log).permit(
-      :subject, 
+      :subject_id,  # subjectをidで扱うように修正
       :note, 
       :study_time_method, 
       :stopwatch_time, 
@@ -123,4 +127,3 @@ class StudyLogsController < ApplicationController
     study_time # 分単位の学習時間
   end
 end
-

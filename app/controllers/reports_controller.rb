@@ -20,6 +20,10 @@ class ReportsController < ApplicationController
     
     # 合計学習時間
     @total_study_time = StudyLog.total_study_time(current_user)
+    
+    # 目標と進捗度を計算
+    @goal = current_user.reports.first.goals.first # 例として最初の目標を使用
+    @progress_percentage = calculate_progress(@goal)
   end
 
   private
@@ -54,18 +58,15 @@ class ReportsController < ApplicationController
   end
 
   # 進捗度を計算するメソッド
-  def calculate_progress(goal, study_time)
+  def calculate_progress(goal)
     # 目標が存在しない場合は進捗度を0に
     return 0 unless goal
-    
-    # 学習時間がゼロの場合は進捗度もゼロ
-    return 0 if study_time == 0
 
     # 目標に対する学習時間を取得
     total_study_time_for_goal = StudyLog.total_study_time_for_goal(@user, goal) || 0
     
     # 目標に対して学習時間がゼロの場合は進捗度0
-    return 0 if total_study_time_for_goal == 0
+    return 0 if total_study_time_for_goal == 0 || goal.study_time == 0
 
     # 進捗度計算（進捗度は最大100%に制限）
     progress_percentage = (total_study_time_for_goal.to_f / goal.study_time) * 100

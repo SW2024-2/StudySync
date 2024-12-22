@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_22_111444) do
   create_table "comments", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "study_log_id", null: false
@@ -43,6 +43,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
     t.index ["user_id"], name: "index_goals_on_user_id"
   end
 
+  create_table "goals_subjects", force: :cascade do |t|
+    t.integer "goal_id", null: false
+    t.integer "subject_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["goal_id"], name: "index_goals_subjects_on_goal_id"
+    t.index ["subject_id"], name: "index_goals_subjects_on_subject_id"
+  end
+
   create_table "likes", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "study_log_id", null: false
@@ -64,7 +73,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
 
   create_table "study_logs", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "subject"
     t.text "note"
     t.integer "study_time_hours"
     t.integer "study_time_minutes"
@@ -73,9 +81,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
     t.integer "stopwatch_time", default: 0
     t.integer "timer_time"
     t.integer "timer_remaining"
+    t.integer "subject_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_study_logs_on_user_id"
+  end
+
+  create_table "subjects", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -93,6 +108,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_06_005705) do
   add_foreign_key "friendships", "users", column: "friend_id"
   add_foreign_key "goals", "reports"
   add_foreign_key "goals", "users"
+  add_foreign_key "goals_subjects", "goals"
+  add_foreign_key "goals_subjects", "subjects"
   add_foreign_key "likes", "study_logs"
   add_foreign_key "likes", "users"
   add_foreign_key "reports", "users"
