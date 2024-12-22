@@ -1,7 +1,7 @@
 class Goal < ApplicationRecord
   belongs_to :user
   belongs_to :report
-  
+
   # 仮の属性を定義
   attr_accessor :study_time_hours, :study_time_minutes
 
@@ -54,11 +54,18 @@ class Goal < ApplicationRecord
     [progress, 100].min
   end
   
-     # バリデーション
-  validates :title, presence: true, length: { maximum: 255 }
+  # バリデーション
   validate :study_time_must_be_at_least_one_minute
+  validate :custom_validations
 
   # カスタムバリデーション
+  def custom_validations
+    if title.blank?
+      errors.add(:base, "タイトルを入力してください")
+    end
+  end
+
+  # 学習時間が1分未満の場合のバリデーション
   def study_time_must_be_at_least_one_minute
     if total_study_time < 1
       errors.add(:base, "学習時間は1分以上にしてください")
