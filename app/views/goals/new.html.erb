@@ -15,6 +15,21 @@
       <%= form.label :title, "タイトル" %>
       <%= form.text_field :title, id: 'goal_title' %>
     </div>
+    
+        <!-- 科目設定を横並びに表示 -->
+    <div>
+      <%= form.label :subjects, "科目" %>
+      <div class="subjects-container">
+        <%= form.collection_check_boxes :subject_ids, Subject.all, :id, :name do |b| %>
+          <span class="subject-item">
+            <%= b.check_box %>
+            <%= b.label %>
+          </span>
+        <% end %>
+      </div>
+      <br>
+      <%= link_to "科目を登録する", new_subject_path, class: "btn btn-primary" %>
+    </div>
 
     <!-- 時間と分を別々に入力 -->
     <div>
@@ -26,13 +41,6 @@
     <div>
       <%= form.label :period, "期間" %>
       <%= form.select :period, options_for_select([['今日', 'daily'], ['今週', 'weekly'], ['今月', 'monthly']]) %>
-    </div>
-
-    <div>
-      <%= form.label :subjects %>
-      <%= form.collection_check_boxes :subject_ids, Subject.all, :id, :name %> <!-- この部分が重要です -->
-    <br>
-      <%= link_to "科目を登録する", new_subject_path, class: "btn btn-primary" %>
     </div>
 
     <div>
