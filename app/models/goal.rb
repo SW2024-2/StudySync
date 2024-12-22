@@ -54,6 +54,15 @@ class Goal < ApplicationRecord
     [progress, 100].min
   end
   
-   validates :title, presence: true, length: { maximum: 255 }
-   validates :study_time, presence: true, numericality: { only_integer: true, greater_than: 0 }
+     # バリデーション
+  validates :title, presence: true, length: { maximum: 255 }
+  validates :study_time, numericality: { only_integer: true, greater_than: 0 }
+  validate :study_time_must_be_at_least_one_minute
+
+  # カスタムバリデーション
+  def study_time_must_be_at_least_one_minute
+    if total_study_time < 1
+      errors.add(:base, "学習時間は1分以上にしてください")
+    end
+  end
 end
