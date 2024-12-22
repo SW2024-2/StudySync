@@ -32,16 +32,25 @@ class ReportsController < ApplicationController
 
   # 学習時間の設定
   def set_study_times
-    @todays_study_time = sum_study_time(StudyLog.study_time_today(@user))
-    @this_weeks_study_time = sum_study_time(StudyLog.study_time_this_week(@user))
-    @this_months_study_time = sum_study_time(StudyLog.study_time_this_month(@user))
-    @total_study_time = sum_study_time(StudyLog.total_study_time(@user))
+    # 各期間の学習時間を合計してフォーマットする
+    @todays_study_time = format_study_time(sum_study_time(StudyLog.study_time_today(@user)))
+    @this_weeks_study_time = format_study_time(sum_study_time(StudyLog.study_time_this_week(@user)))
+    @this_months_study_time = format_study_time(sum_study_time(StudyLog.study_time_this_month(@user)))
+    @total_study_time = format_study_time(sum_study_time(StudyLog.total_study_time(@user)))
   end
 
-  # ハッシュの学習時間を合計するメソッド
+  # 学習時間の合計を計算するメソッド
   def sum_study_time(study_time_hash)
     return 0 unless study_time_hash.is_a?(Hash)
     study_time_hash.values.sum
+  end
+
+  # 学習時間を「時間と分」にフォーマットするメソッド
+  def format_study_time(study_time)
+    return "0時間 0分" if study_time.nil? || study_time == 0
+    hours = study_time / 60
+    minutes = study_time % 60
+    "#{hours}時間 #{minutes}分"
   end
 
   # 進捗度を計算するメソッド

@@ -3,7 +3,7 @@
 
   <!-- 今日の学習時間 -->
   <section>
-    <h2>今日の学習時間</h2>
+    <h2>今日( <%= Time.zone.now.strftime('%m月%d日') %> )の学習時間</h2>
     <% if @todays_study_time.empty? %>
       <p class="no-study">まだ勉強をしていません</p>
     <% else %>
@@ -11,7 +11,18 @@
         <article class="study-time">
           <span><%= Time.zone.now.strftime('%m月%d日') %></span> <!-- 今日の日付 -->
           <span><%= subject %></span> <!-- 科目 -->
-          <span><%= "#{study_time / 60}時間 #{study_time % 60}分" %></span> <!-- 学習時間 (時間と分) -->
+          <span>
+            <% minutes = study_time / 60 %>
+            <% seconds = study_time % 60 %>
+            <% if minutes > 0 %>
+              <%= "#{minutes}時間" %>
+              <% if seconds > 0 %>
+                <%= " #{seconds}分" %>
+              <% end %>
+            <% elsif seconds > 0 %>
+              <%= "#{seconds}分" %>
+            <% end %>
+          </span> <!-- 学習時間 (時間と分) -->
         </article>
       <% end %>
     <% end %>
@@ -19,15 +30,26 @@
 
   <!-- 今週の学習時間 -->
   <section>
-    <h2>今週の学習時間</h2>
+    <h2>今週( <%= Time.zone.now.beginning_of_week.strftime('%m月%d日') %> ～ <%= Time.zone.now.end_of_week.strftime('%m月%d日') %> )の学習時間</h2>
     <% if @this_weeks_study_time.empty? %>
       <p class="no-study">まだ勉強をしていません</p>
     <% else %>
       <% @this_weeks_study_time.each do |subject, study_time| %>
         <article class="study-time">
-          <span><%= Time.zone.now.strftime('%m月%d日') %></span> <!-- 今日の日付 -->
+          <span><%= Time.zone.now.beginning_of_week.strftime('%m月%d日') %> ～ <%= Time.zone.now.end_of_week.strftime('%m月%d日') %></span> <!-- 今週の日付範囲 -->
           <span><%= subject %></span> <!-- 科目 -->
-          <span><%= "#{study_time / 60}時間 #{study_time % 60}分" %></span> <!-- 学習時間 (時間と分) -->
+          <span>
+            <% minutes = study_time / 60 %>
+            <% seconds = study_time % 60 %>
+            <% if minutes > 0 %>
+              <%= "#{minutes}時間" %>
+              <% if seconds > 0 %>
+                <%= " #{seconds}分" %>
+              <% end %>
+            <% elsif seconds > 0 %>
+              <%= "#{seconds}分" %>
+            <% end %>
+          </span> <!-- 学習時間 (時間と分) -->
         </article>
       <% end %>
     <% end %>
@@ -35,15 +57,26 @@
 
   <!-- 今月の学習時間 -->
   <section>
-    <h2>今月の学習時間</h2>
+    <h2>今月( <%= Time.zone.now.beginning_of_month.strftime('%m月%d日') %> ～ <%= Time.zone.now.end_of_month.strftime('%m月%d日') %> )の学習時間</h2>
     <% if @this_months_study_time.empty? %>
       <p class="no-study">まだ勉強をしていません</p>
     <% else %>
       <% @this_months_study_time.each do |subject, study_time| %>
         <article class="study-time">
-          <span><%= Time.zone.now.strftime('%m月%d日') %></span> <!-- 今日の日付 -->
+          <span><%= Time.zone.now.beginning_of_month.strftime('%m月%d日') %> ～ <%= Time.zone.now.end_of_month.strftime('%m月%d日') %></span> <!-- 今月の日付範囲 -->
           <span><%= subject %></span> <!-- 科目 -->
-          <span><%= "#{study_time / 60}時間 #{study_time % 60}分" %></span> <!-- 学習時間 (時間と分) -->
+          <span>
+            <% minutes = study_time / 60 %>
+            <% seconds = study_time % 60 %>
+            <% if minutes > 0 %>
+              <%= "#{minutes}時間" %>
+              <% if seconds > 0 %>
+                <%= " #{seconds}分" %>
+              <% end %>
+            <% elsif seconds > 0 %>
+              <%= "#{seconds}分" %>
+            <% end %>
+          </span> <!-- 学習時間 (時間と分) -->
         </article>
       <% end %>
     <% end %>
@@ -54,7 +87,18 @@
   <!-- 合計学習時間 -->
   <div class="total-time">
     <span>合計学習時間: </span>
-    <strong><%= "#{@total_study_time / 60}時間 #{@total_study_time % 60}分" %></strong> <!-- 合計学習時間 (時間と分) -->
+    <strong>
+      <% minutes = @total_study_time / 60 %>
+      <% seconds = @total_study_time % 60 %>
+      <% if minutes > 0 %>
+        <%= "#{minutes}時間" %>
+        <% if seconds > 0 %>
+          <%= " #{seconds}分" %>
+        <% end %>
+      <% elsif seconds > 0 %>
+        <%= "#{seconds}分" %>
+      <% end %>
+    </strong> <!-- 合計学習時間 (時間と分) -->
   </div>
 
   <!-- 目標を見るリンク -->

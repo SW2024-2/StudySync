@@ -21,8 +21,8 @@ class StudyLog < ApplicationRecord
 
   # 今週の学習時間を教科ごとに取得
   def self.study_time_this_week(user)
-    start_of_week = Date.today.beginning_of_week
-    end_of_week = Date.today.end_of_week
+    start_of_week = Time.zone.now.beginning_of_week
+    end_of_week = Time.zone.now.end_of_week
 
     where(user: user, created_at: start_of_week..end_of_week)
       .group(:subject)
@@ -31,8 +31,8 @@ class StudyLog < ApplicationRecord
 
   # 今月の学習時間を教科ごとに取得
   def self.study_time_this_month(user)
-    start_of_month = Date.today.beginning_of_month
-    end_of_month = Date.today.end_of_month
+    start_of_month = Time.zone.now.beginning_of_month
+    end_of_month = Time.zone.now.end_of_month
 
     where(user: user, created_at: start_of_month..end_of_month)
       .group(:subject)
