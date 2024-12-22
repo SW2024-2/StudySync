@@ -31,6 +31,8 @@
     <div>
       <%= form.label :subjects %>
       <%= form.collection_check_boxes :subject_ids, Subject.all, :id, :name %> <!-- この部分が重要です -->
+    <br>
+      <%= link_to "科目を登録する", new_subject_path, class: "btn btn-primary" %>
     </div>
 
     <div>
