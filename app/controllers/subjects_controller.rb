@@ -7,6 +7,7 @@ class SubjectsController < ApplicationController
 
   def create
     @subject = Subject.new(subject_params)
+    @subject.user_id = current_user.id  # 現在のユーザーのIDを設定
     if @subject.save
       redirect_to session.delete(:return_to) || root_path, notice: '科目が登録されました。'
     else

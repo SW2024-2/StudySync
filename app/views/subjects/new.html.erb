@@ -5,6 +5,9 @@
     <%= form.label :name, "科目名" %>
     <%= form.text_field :name %>
   </div>
+  
+    <!-- user_idを隠しフィールドとして追加 -->
+  <%= form.hidden_field :user_id, value: current_user.id %>
   <div>
     <%= form.submit "作成" %>
   </div>
