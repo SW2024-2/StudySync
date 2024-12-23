@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   
   resources :reports do
     resources :goals
+
   end
 
   resources :likes, only: [:create, :destroy]

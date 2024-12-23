@@ -9,7 +9,7 @@
     <% else %>
       <% @todays_study_time.each do |subject, study_time| %>
         <article class="study-time">
-          <span><%= Time.zone.now.strftime('%m月%d日') %></span> <!-- 今日の日付 -->
+          <span><%= subject.created_at.strftime('%m月%d日') %></span> <!-- 登録した日付 -->
           <span><%= subject.name %></span> <!-- 科目 -->
           <span>
             <% minutes = study_time / 60 %>
@@ -36,7 +36,7 @@
     <% else %>
       <% @this_weeks_study_time.each do |subject, study_time| %>
         <article class="study-time">
-          <span><%= Time.zone.now.beginning_of_week.strftime('%m月%d日') %> ～ <%= Time.zone.now.end_of_week.strftime('%m月%d日') %></span> <!-- 今週の日付範囲 -->
+          <span><%= subject.created_at.strftime('%m月%d日') %></span> <!-- 登録した日付 -->
           <span><%= subject.name %></span> <!-- 科目 -->
           <span>
             <% minutes = study_time / 60 %>
@@ -63,7 +63,7 @@
     <% else %>
       <% @this_months_study_time.each do |subject, study_time| %>
         <article class="study-time">
-          <span><%= Time.zone.now.beginning_of_month.strftime('%m月%d日') %> ～ <%= Time.zone.now.end_of_month.strftime('%m月%d日') %></span> <!-- 今月の日付範囲 -->
+          <span><%= subject.created_at.strftime('%m月%d日') %></span> <!-- 登録した日付 -->
           <span><%= subject.name %></span> <!-- 科目 -->
           <span>
             <% minutes = study_time / 60 %>

@@ -67,13 +67,14 @@ class GoalsController < ApplicationController
       render :edit
     end
   end
+  
 
   # 目標を削除
   def destroy
     @goal.destroy
-    redirect_to report_goals_path(@report), notice: '目標が削除されました。'
+    redirect_to report_goals_path, notice: '目標が削除されました。'
   end
-
+  
   private
 
   # Strong Parameters: 許可するパラメータを定義
