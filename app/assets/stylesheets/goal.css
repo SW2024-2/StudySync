@@ -1,0 +1,57 @@
+.hide {
+  display: none;
+}
+
+/* タブスタイル */
+.tab {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+.tab-item {
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.tab-item.select {
+  font-weight: bold;
+  border-bottom: 2px solid #000;
+}
+
+/* goal-actionsのリンクを横並びに */
+.goal-actions {
+  display: inline-flex; /* 横並びにする */
+  gap: 10px; /* リンク間の余白 */
+  align-items: center;
+}
+
+.goal-actions .edit-link,
+.goal-actions .delete-link {
+  text-decoration: none;
+  color: blue;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.goal-actions .delete-link:hover {
+  color: red; /* 削除リンクのホバー時の強調色 */
+}
+
+/* カードデザイン */
+.goal-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.progress-chart {
+  margin-top: 10px;
+}
+
+.no-goals {
+  color: #555;
+  font-style: italic;
+}

@@ -37,8 +37,8 @@
           </div>
           <div class="goal-actions">
             <%= link_to '編集', edit_report_goal_path(@report, goal), class: 'edit-link' %> |
-            <%= form_with(model: goal, url: report_goal_path(@report, goal), method: :delete, local: true) do |form| %>
-              <%= form.submit '削除', class: 'delete-btn' %>
+            <%= form_tag report_goal_path(@report, goal), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-form' do %>
+              <%= link_to '削除', '#', class: 'delete-link', onclick: 'this.closest("form").submit(); return false;' %>
             <% end %>
           </div>
         </div>
@@ -67,8 +67,8 @@
           </div>
           <div class="goal-actions">
             <%= link_to '編集', edit_report_goal_path(@report, goal), class: 'edit-link' %> |
-            <%= form_with(model: goal, url: report_goal_path(@report, goal), method: :delete, local: true) do |form| %>
-              <%= form.submit '削除', class: 'delete-btn' %>
+            <%= form_tag report_goal_path(@report, goal), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-form' do %>
+              <%= link_to '削除', '#', class: 'delete-link', onclick: 'this.closest("form").submit(); return false;' %>
             <% end %>
           </div>
         </div>
@@ -97,8 +97,8 @@
           </div>
           <div class="goal-actions">
             <%= link_to '編集', edit_report_goal_path(@report, goal), class: 'edit-link' %> |
-            <%= form_with(model: goal, url: report_goal_path(@report, goal), method: :delete, local: true) do |form| %>
-              <%= form.submit '削除', class: 'delete-btn' %>
+            <%= form_tag report_goal_path(@report, goal), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-form' do %>
+              <%= link_to '削除', '#', class: 'delete-link', onclick: 'this.closest("form").submit(); return false;' %>
             <% end %>
           </div>
         </div>
