@@ -12,10 +12,12 @@
         </ul>
       </div>
     <% end %>
-  
+
     <div>
       <%= form.label :subject, "科目" %>
-      <%= form.text_field :subject %>
+      <%= form.collection_select :subject_id, @subjects, :id, :name, prompt: "選択してください" %>
+      <br>
+      <%= link_to '科目設定ページ', new_subject_path(return_to: new_study_log_path) %>
     </div>
   
     <!-- 時間と分の入力 -->
