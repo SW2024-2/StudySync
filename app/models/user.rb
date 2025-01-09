@@ -18,6 +18,8 @@ class User < ApplicationRecord
 
   # 目標との関連（1対多）
   has_many :goals, dependent: :destroy
+  
+  has_many :subjects
 
   # パスワードを使用するための設定
   has_secure_password validations: false # バリデーションを無効化

@@ -24,6 +24,9 @@ class ReportsController < ApplicationController
     # 目標と進捗度を計算
     @goal = current_user.reports.first.goals.first # 例として最初の目標を使用
     @progress_percentage = calculate_progress(@goal)
+    
+    @study_sessions = StudyLog.all
+    
   end
 
   private

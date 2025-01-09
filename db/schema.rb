@@ -82,6 +82,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_22_111444) do
     t.integer "timer_time"
     t.integer "timer_remaining"
     t.integer "subject_id"
+    t.datetime "start_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_study_logs_on_user_id"
@@ -89,8 +90,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_22_111444) do
 
   create_table "subjects", force: :cascade do |t|
     t.string "name"
-    t.string "color"
-    t.integer "user_id", null: false
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_subjects_on_user_id"
@@ -117,5 +117,4 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_22_111444) do
   add_foreign_key "likes", "users"
   add_foreign_key "reports", "users"
   add_foreign_key "study_logs", "users"
-  add_foreign_key "subjects", "users"
 end

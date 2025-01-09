@@ -11,6 +11,7 @@ class CreateStudyLogs < ActiveRecord::Migration[7.1]
       t.integer :timer_time # タイマーの時間
       t.integer :timer_remaining # タイマー残り時間
       t.integer :subject_id
+      t.datetime :start_time
 
       t.timestamps
     end
