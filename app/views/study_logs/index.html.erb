@@ -15,7 +15,7 @@
       <!-- 本文部分 -->
       <div class="study-log-body">
         <!-- 科目名を表示 -->
-        <h3 class="subject"><%= study_log.subject.name %></h3>
+        <h3 class="subject"><%= study_log.subject.present? ? study_log.subject.name : '科目が設定されていません' %></h3>
         
         <!-- 学習時間を表示 -->
         <h3 class="study-time">
