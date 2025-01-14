@@ -22,9 +22,6 @@ test:
 
 production:
   <<: *default
-  adapter: postgresql
-  encoding: unicode
-  pool: 5
   database: studysync_0t9e
   username: studysync_0t9e_user
   password: <%= ENV['MYSITE_DATABASE_PASSWORD'] %>
