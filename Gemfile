@@ -48,7 +48,7 @@ gem 'chartkick'
 gem 'groupdate' # chartkickのために必要
 gem 'simple_calendar', '~> 2.0'
 
-
+gem "pg"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
