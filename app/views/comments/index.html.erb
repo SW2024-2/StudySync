@@ -1,21 +1,41 @@
 <div class="comment-page">
   <!-- 学習ログ情報 -->
+  <h3>学習記録</h3>
   <div class="study-log-info">
-    <h3>学習記録</h3>
-    <span><strong>投稿者:</strong> <%= @study_log.user.name %></span>
-    <span><strong>投稿時間:</strong> <%= time_ago_in_words(@study_log.created_at) %>前</span>
-    
-    <p><strong>科目:</strong> <%= @study_log.subject %></p>
-    <p><strong>学習時間:</strong> <%= @study_log.study_time %>分</p>
-
-    <%= form_with url: study_log_like_path(@study_log), method: @study_log.liked_by?(current_user) ? :delete : :post, local: true do %>
-      <a href="#" onclick="this.closest('form').submit(); return false;"
-         class="like-icon"
-         style="<%= @study_log.liked_by?(current_user) ? 'color: red;' : '' %>">
-        <%= @study_log.liked_by?(current_user) ? '❤️ いいね' : '👍 いいね' %>
-      </a>
-    <% end %>
-    <span class="like-count"><%= @study_log.likes.count %></span>
+    <div class="log-header">
+      <span><strong>投稿者:</strong> <%= @study_log.user.name %></span>
+      <% if current_user != @study_log.user && !current_user.friends.include?(@study_log.user) %>
+        <%= button_to 'フォローする', friendships_path(friend_id: @study_log.user.id), method: :post, class: 'follow-button btn btn-primary' %>
+      <% end %>
+    </div>
+    <div class="log-details">
+      <p><strong>科目:</strong> <%= @study_log.subject.is_a?(String) ? @study_log.subject : (@study_log.subject.respond_to?(:name) ? @study_log.subject.name : '科目が設定されていません') %></p>
+      <p><strong>学習時間:</strong> 
+        <% hours = (@study_log.study_time / 60).floor %>
+        <% minutes = @study_log.study_time % 60 %>
+        <% if hours > 0 && minutes > 0 %>
+          <%= "#{hours}時間 #{minutes}分" %>
+        <% elsif hours > 0 %>
+          <%= "#{hours}時間" %>
+        <% elsif minutes > 0 %>
+          <%= "#{minutes}分" %>
+        <% else %>
+          <%= "0分" %>
+        <% end %>
+      </p>
+      <p><strong>メモ:</strong> <%= @study_log.note.present? ? @study_log.note : 'メモがありません。' %></p>
+      <div style="margin-top: 10px;">
+        <%= form_with url: study_log_like_path(@study_log), method: @study_log.liked_by?(current_user) ? :delete : :post, local: true do %>
+          <a href="#" onclick="this.closest('form').submit(); return false;"
+             class="like-icon"
+             style="<%= @study_log.liked_by?(current_user) ? 'color: red;' : '' %>">
+            <%= @study_log.liked_by?(current_user) ? '❤️ いいね' : '👍 いいね' %>
+          </a>
+          <span class="like-count" style="margin-left: 5px;">(<%= @study_log.likes.count %>)</span>
+        <% end %>
+      </div>
+      <span class="comment-time"><%= time_ago_in_words(@study_log.created_at) %>前</span>
+    </div>
   </div>
   
   <!-- コメント一覧 -->
@@ -24,37 +44,145 @@
     <% if @comments.any? %>
       <% @comments.each do |comment| %>
         <div class="comment">
-          <p>
-            <strong><%= comment.user.name %></strong>: <%= comment.content %>
+          <div class="comment-header">
+            <strong class="comment-user-name"><%= comment.user.name %></strong>
+            <% if comment.user == current_user %>
+              <%= link_to '削除', study_log_comment_path(@study_log, comment), method: :delete, data: { confirm: 'コメントを削除しますか？' }, class: 'delete-comment-link' %>
+            <% end %>
+          </div>
+          <p class="comment-content">
+            <%= comment.content %>
           </p>
-          <p>
-            <small><%= time_ago_in_words(comment.created_at) %>前</small>
-          </p>
-          <% if comment.user == current_user %>
-            <%= link_to '削除', study_log_comment_path(@study_log, comment), method: :delete, data: { confirm: 'コメントを削除しますか？' }, class: 'delete-comment-link' %>
-          <% end %>
+          <small class="comment-time"><%= time_ago_in_words(comment.created_at) %>前</small>
         </div>
       <% end %>
     <% else %>
-      <p>まだコメントはありません。</p>
+      <p class="no-comments">まだコメントはありません。</p>
     <% end %>
   </div>
   
   <% if logged_in? %>
-    <%= form_with(model: [@study_log, Comment.new], local: true) do |f| %>
-      <div>
-        <%= f.text_area :content, placeholder: 'コメントを入力してください', rows: 2 %>
+    <%= form_with(model: [@study_log, Comment.new], local: true, class: 'comment-form') do |f| %>
+      <div class="form-group">
+        <%= f.text_area :content, placeholder: 'コメントを入力してください', rows: 2, class: 'comment-input' %>
       </div>
-      <div>
-        <%= f.submit '送信', class: 'button' %>
+      <div class="form-group" style="text-align: center;">
+        <%= f.submit '送信', class: 'comment-submit' %>
       </div>
     <% end %>
   <% else %>
-    <p>コメントを追加するには <%= link_to 'ログイン', login_form_path %> してください。</p>
+    <p class="login-prompt">コメントを追加するには <%= link_to 'ログイン', login_form_path %> してください。</p>
   <% end %>
 
   <!-- 戻るリンク -->
-  <div class="back-link">
-    <%= link_to '戻る', study_logs_path, class: 'back-button' %>
+  <div class="back-link" style="margin-top: 20px;">
+    <%= link_to 'トップページに戻る', study_logs_path %>
   </div>
 </div>
+
+<style>
+  .comment-page {
+    font-family: Arial, sans-serif;
+    color: #333;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .study-log-info {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+  }
+  
+  .log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .log-details {
+    margin-top: 10px;
+  }
+  
+  .follow-button {
+    padding: 5px 10px;
+    font-size: 14px;
+  }
+  
+  .comments {
+    margin-top: 20px;
+  }
+  
+  .comment {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    position: relative;
+    background: #fff;
+  }
+  
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .delete-comment-link {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 12px;
+    color: #e74c3c;
+    text-decoration: none;
+  }
+  
+  .delete-comment-link:hover {
+    text-decoration: underline;
+  }
+  
+  .comment-user-name {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .comment-content {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .comment-time {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #999;
+  }
+  
+  .comment-form {
+    margin-top: 20px;
+  }
+  
+  .comment-input {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .no-comments {
+    text-align: center;
+    font-size: 14px;
+    color: #999;
+    margin-top: 10px;
+  }
+  
+</style>

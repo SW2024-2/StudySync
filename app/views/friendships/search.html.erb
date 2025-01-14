@@ -1,34 +1,112 @@
-<h3>ユーザー検索</h3>
+<body id="user-search-page">
+  <h1>ユーザー検索</h1>
 
-<!-- 検索フォーム -->
-<%= form_with url: search_friendships_path, method: :get, local: true do |form| %>
-  <div>
-    <%= form.text_field :query, placeholder: "名前またはIDで検索", class: "search-input" %>
-    <%= form.submit "検索🔍", class: "search-button" %>
+  <!-- 検索フォーム -->
+  <div class="search-form">
+    <%= form_with url: search_friendships_path, method: :get, local: true do |form| %>
+      <%= form.text_field :query, placeholder: "名前またはIDで検索" %>
+      <%= form.submit "検索🔍" %>
+    <% end %>
   </div>
-<% end %>
 
-<!-- 検索結果表示 -->
-<h4>検索結果</h4>
-
-<% if @users.any? %>
-  <% @users.each do |user| %>
-    <div>
-      <p><strong>名前:</strong> <%= user.name %> | <strong>ID:</strong> <%= user.uid %></p>
-
-      <% if current_user.friends.include?(user) %>
-        <!-- 友達削除ボタン -->
-        <%= button_to '友達削除', friendship_path(user), method: :delete, class: "btn btn-danger" %>
-      <% else %>
-        <!-- 友達追加ボタン -->
-        <%= button_to '友達追加', friendships_path(friend_id: user.id), method: :post, class: "btn btn-primary" %>
+  <!-- 検索結果表示 -->
+  <% if @users.any? %>
+    <ul class="user-list">
+      <% @users.each do |user| %>
+        <li class="user-item">
+          <div class="user-info">
+            <span><h3><strong>・名前:</strong> <%= user.name %> | <strong>ID:</strong> <%= user.uid %></h3></span>
+          </div>
+          <div class="user-action">
+            <% if current_user.friends.include?(user) %>
+              <%= button_to '友達削除', friendship_path(user), method: :delete %>
+            <% else %>
+              <%= button_to 'フォロー', friendships_path(friend_id: user.id), method: :post %>
+            <% end %>
+          </div>
+        </li>
       <% end %>
-    </div>
+    </ul>
+  <% else %>
+    <p class="no-results">該当するユーザーが見つかりません。</p>
   <% end %>
-<% else %>
-  <p>該当するユーザーが見つかりません。</p>
-<% end %>
 
-<div class="back-link">
-<%= link_to '戻る', friendships_path, class: 'back-button' %>
-</div>
+  <!-- 戻るリンク -->
+  <div class="back-link">
+    <%= link_to '戻る', friendships_path %>
+  </div>
+</body>
+
+<style>
+  /* 全体のスタイル */
+  #user-search-page {
+    text-align: center;
+    margin: 0 auto;
+    max-width: 800px; /* ページ全体の幅を制限 */
+  }
+
+  .search-form {
+    margin-bottom: 20px;
+  }
+
+  .search-form input[type="text"] {
+    padding: 8px;
+    font-size: 14px;
+    width: 60%;
+    max-width: 400px;
+    margin-right: 10px;
+  }
+
+  .search-form input[type="submit"] {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+
+  /* ユーザーリストのスタイル */
+  .user-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin: 10px 20px; /* 左右にスペースを追加 */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+
+  .user-info {
+    text-align: left;
+    flex: 1; /* ユーザー情報部分が広がる */
+  }
+
+  .user-info span {
+    display: block;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .user-info span strong {
+    font-weight: bold;
+  }
+
+  .user-action {
+    margin-left: 20px;
+    text-align: right;
+  }
+
+  .no-results {
+    font-size: 20px;
+    color: #999;
+    margin-top: 20px;
+  }
+
+  .back-link {
+    margin-top: 20px;
+  }
+</style>

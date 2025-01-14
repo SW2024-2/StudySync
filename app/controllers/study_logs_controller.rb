@@ -5,7 +5,14 @@ class StudyLogsController < ApplicationController
   # 学習記録の一覧を表示
   def index
     if session[:login_uid]
-      @study_logs = StudyLog.includes(:user).order(created_at: :desc)
+      # おすすめの学習記録（例: 全ての学習記録を取得）
+      @recommended_study_logs = StudyLog.includes(:user).order(created_at: :desc)
+  
+      # フォロー中の学習記録（例: フォロー中ユーザーの学習記録を取得）
+      @following_study_logs = StudyLog.includes(:user)
+                                      .where(user: current_user.friends)
+                                      .order(created_at: :desc)
+  
       render "study_logs/index"
     else
       render "top/login"

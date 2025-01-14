@@ -1,22 +1,92 @@
-<h3>フレンド一覧</h3>
+<body id="friend-list-page">
+  <h1>フレンド一覧</h1>
 
-<!-- フレンド検索へのリンク -->
-<%= link_to '友達を検索する', search_friendships_path, class: "btn btn-primary" %>
+  <!-- フレンド検索へのリンク -->
+  <div class="search-link">
+    <h3><%= link_to 'フレンドを検索する🔍', search_friendships_path %></h3>
+  </div>
 
-<!-- フレンドリスト -->
-<% if @friends.present? %>
-  <ul>
-    <% @friends.each do |friend| %>
-      <li>
-        <strong>名前:</strong> <%= friend.name %> | <strong>ID:</strong> <%= friend.uid %>
-        <%= button_to '友達削除', friendship_path(friend), method: :delete, class: "btn btn-danger" %>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>現在、友達はいません。</p>
-<% end %>
+  <!-- フレンドリスト -->
+  <% if @friends.present? %>
+    <ul class="friend-list">
+      <% @friends.each do |friend| %>
+        <li class="friend-item">
+          <div class="friend-info">
+            <span><h3><strong>・名前:</strong> <%= friend.name %> | <strong>ID:</strong> <%= friend.uid %></h3></span>
+          </div>
+          <div class="friend-action">
+            <%= button_to 'フォロー解除', friendship_path(friend), method: :delete %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="no-friends">現在、フレンドはいません。</p>
+  <% end %>
 
-<div class="back-link">
-<%= link_to '戻る', study_logs_path, class: 'back-button' %>
-</div>
+  <!-- トップページに戻るリンク -->
+  <div class="back-link">
+    <%= link_to 'トップページに戻る', root_path %>
+  </div>
+</body>
+
+<style>
+  /* 全体のスタイル */
+  #friend-list-page {
+    text-align: center;
+    margin: 0 auto;
+    max-width: 800px; /* ページ全体の幅を制限 */
+  }
+
+  .search-link {
+    margin-bottom: 20px;
+  }
+
+  /* フレンドリストのスタイル */
+  .friend-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .friend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin: 10px 20px; /* 左右にスペースを追加 */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+
+  .friend-info {
+    text-align: left;
+    flex: 1; /* フレンド情報部分が広がる */
+  }
+
+  .friend-info span {
+    display: block;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .friend-info span strong {
+    font-weight: bold;
+  }
+
+  .friend-action {
+    margin-left: 20px;
+    text-align: right;
+  }
+
+  .no-friends {
+    font-size: 20px;
+    color: #999;
+    margin-top: 20px;
+  }
+
+  .back-link {
+    margin-top: 20px;
+  }
+</style>

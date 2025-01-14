@@ -1,55 +1,292 @@
-<div class="study-logs">
-  <% @study_logs.each do |study_log| %>
-    <div class="study-log">
-      <!-- ヘッダー部分 -->
-      <div class="study-log-header">
-        <span class="user-name"><%= study_log.user.name %></span>
-        <span class="timestamp"><%= time_ago_in_words(study_log.created_at) %>前</span>
-        <div class="action-links">
-          <%= form_tag study_log_path(study_log), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-form' do %>
-            <%= link_to '削除', '#', class: 'delete-link', onclick: 'this.closest("form").submit(); return false;' %>
-          <% end %>
-          <%= link_to '編集', edit_study_log_path(study_log), class: 'edit-link' %>
-        </div>
-      </div>
-      <!-- 本文部分 -->
-      <div class="study-log-body">
-        <!-- 科目名を表示 -->
-        <h3 class="subject"><%= study_log.subject.present? ? study_log.subject.name : '科目が設定されていません' %></h3>
-        
-        <!-- 学習時間を表示 -->
-        <h3 class="study-time">
-          <% hours = (study_log.study_time / 60).floor %>
-          <% minutes = study_log.study_time % 60 %>
-          <% if hours > 0 && minutes > 0 %>
-            <%= "#{hours}時間 #{minutes}分" %>
-          <% elsif hours > 0 %>
-            <%= "#{hours}時間" %>
-          <% elsif minutes > 0 %>
-            <%= "#{minutes}分" %>
-          <% end %>
-        </h3>
-      </div>
-      <!-- フッター部分 -->
-      <div class="study-log-footer">
-        <%= link_to '💬コメント', study_log_comments_path(study_log), class: 'comment-link' %>
-        <%= form_with url: study_log_like_path(study_log), method: study_log.liked_by?(current_user) ? :delete : :post, local: true do %>
-          <a href="#" onclick="this.closest('form').submit(); return false;"
-             class="like-icon"
-             style="<%= study_log.liked_by?(current_user) ? 'color: red;' : '' %>">
-            <%= study_log.liked_by?(current_user) ? '❤️ いいね' : '👍 いいね' %>
-          </a>
-        <% end %>
-        <span class="like-count"><%= study_log.likes.count %></span>
-      </div>
-    </div>
-  <% end %>
+<head>
+  <style>
+    /* 全体の余白をリセット */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    /* サイトアイコンのスタイル */
+    .site-icon {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      text-align: center; /* 中央揃え */
+      background: white;
+      z-index: 1000;
+      padding: 10px 0;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .site-icon img {
+      height: 50px; /* アイコンの高さ */
+    }
+    
+    /* ヘッダー部分 */
+    .header {
+      position: fixed;
+      top: 70px; /* アイコンの高さ分下げる */
+      left: 0;
+      width: 100%;
+      background: white;
+      color: black;
+      z-index: 999;
+      text-align: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #ccc;
+    }
+    
+    .tab-menu {
+      display: flex;
+      justify-content: space-around;
+    }
+    
+    .tab-link {
+      padding: 10px 20px;
+      color: black;
+      text-decoration: none;
+      font-weight: normal;
+    }
+    
+    .tab-link.select {
+      font-weight: bold;
+      border-bottom: 2px solid black;
+    }
+    
+    /* コンテンツ部分 */
+    .content {
+      margin-top: 130px; /* アイコン（50px） + ヘッダー（60px）分を確保 */
+      padding: 20px;
+      padding-bottom: 80px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    
+    /* タブパネル */
+    .tab-pane {
+      display: none;
+    }
+    
+    .tab-pane.active {
+      display: block;
+    }
+    
+    /* 各投稿の枠 */
+    .study-log {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      background-color: #fff;
+    }
+    
+    /* 各投稿のヘッダー */
+    .study-log-header {
+      display: flex;
+      justify-content: space-between; /* 左右に要素を配置 */
+      align-items: center;
+    }
+    
+    /* 各投稿のフッター */
+    .study-log-footer {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between; /* 左右に要素を配置 */
+      align-items: center;
+    }
+    
+    .left-actions {
+      display: flex;
+      gap: 15px; /* コメントといいねの間隔 */
+      align-items: center;
+    }
+    
+    .right-actions {
+      display: flex;
+      gap: 10px; /* 編集と削除の間隔 */
+    }
+    
+    .action-button {
+      color: #007bff; /* 青色 */
+      text-decoration: none;
+      padding: 5px 10px;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      background-color: transparent;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    
+    .action-button:hover {
+      text-decoration: underline;
+    }
+    
+    /* フッター */
+    .footer-menu {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #f9f9f9;
+      border-top: 1px solid #ccc;
+      display: flex; /* フレックスボックスを使用 */
+      justify-content: space-around; /* 均等に分割 */
+      align-items: center; /* 垂直方向中央揃え */
+      padding: 10px 0;
+      box-sizing: border-box;
+    }
+    
+    .footer-link {
+      flex: 1; /* 各リンクを均等に拡大 */
+      text-align: center; /* テキストを中央揃え */
+      text-decoration: none;
+      color: #007bff;
+      font-size: 18px;
+    }
+    
+  </style>
+</head>
+
+<div class="site-icon">
+  <img src="<%= asset_path('icon.png') %>" alt="サイトアイコン" class="icon-image">
 </div>
 
-<!-- フッターのメニュー -->
-<div class="footer-menu">
-  <%= link_to '記録する', new_study_log_path, class: 'footer-link' %>
-  <%= link_to 'レポートを見る', reports_path, class: 'footer-link' %>
-  <%= link_to 'フレンド一覧', friendships_path, class: 'footer-link' %>
-  <%= link_to "ログアウト", logout_path, class: 'footer-link' %>
-</div>
+<body>
+  <!-- ヘッダー部分 -->
+  <div class="header">
+    <div class="tab-menu">
+      <a href="#" id="recommended-tab" class="tab-link select">達成目標</a>
+      <a href="#" id="following-tab" class="tab-link">フォロー</a>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- 達成目標のタブ -->
+    <div id="recommended" class="tab-pane active">
+      <div class="study-logs">
+        <% if @recommended_study_logs.present? %>
+          <% @recommended_study_logs.each do |study_log| %>
+            <div class="study-log">
+              <div class="study-log-header">
+                <!-- 投稿者名と投稿時間を横並び -->
+                <div>
+                  <span class="user-name"><%= study_log.user.name %></span>
+                  <span class="timestamp">&emsp;&emsp;<%= time_ago_in_words(study_log.created_at) %>前</span>
+                </div>
+                
+                <!-- 削除・編集ボタンを右端に配置 -->
+                <% if study_log.user == current_user %>
+                  <div class="right-actions">
+                    <%= form_tag study_log_path(study_log), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-form' do %>
+                      <%= link_to '削除', '#', class: 'action-button delete-link', onclick: 'this.closest("form").submit(); return false;' %>
+                    <% end %>
+                    <%= link_to '編集', edit_study_log_path(study_log), class: 'action-button edit-link' %>
+                  </div>
+                <% end %>
+              </div>
+              <div class="study-log-body">
+                <h3 class="subject"><%= study_log.subject.present? ? study_log.subject.name : '科目が設定されていません' %></h3>
+                <h3 class="study-time"><%= "#{(study_log.study_time / 60).floor}時間 #{study_log.study_time % 60}分" %></h3>
+              </div>
+              <div class="study-log-footer">
+                <div class="left-actions">
+                  <%= link_to '💬コメント', study_log_comments_path(study_log), class: 'comment-link' %>
+                  <%= form_with url: study_log_like_path(study_log), method: study_log.liked_by?(current_user) ? :delete : :post, local: true do %>
+                    <a href="#" onclick="this.closest('form').submit(); return false;"
+                       class="like-icon"
+                       style="<%= study_log.liked_by?(current_user) ? 'color: red;' : '' %>">
+                      <%= study_log.liked_by?(current_user) ? '❤️ いいね' : '👍 いいね' %>
+                    </a>
+                  <% end %>
+                  <span class="like-count">(<%= study_log.likes.count %>)</span>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <center>投稿がありません。</center>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- フォローのタブ -->
+    <div id="following" class="tab-pane">
+      <div class="study-logs">
+        <% if @following_study_logs.present? %>
+          <% @following_study_logs.each do |study_log| %>
+            <div class="study-log">
+              <div class="study-log-header">
+                <!-- 投稿者名と投稿時間を横並び -->
+                <div>
+                  <span class="user-name"><%= study_log.user.name %></span>
+                  <span class="timestamp">&emsp;&emsp;<%= time_ago_in_words(study_log.created_at) %>前</span>
+                </div>
+                
+                <!-- 削除・編集ボタンを右端に配置 -->
+                <% if study_log.user == current_user %>
+                  <div class="right-actions">
+                    <%= form_tag study_log_path(study_log), method: :delete, data: { confirm: '本当に削除しますか？' }, class: 'delete-form' do %>
+                      <%= link_to '削除', '#', class: 'action-button delete-link', onclick: 'this.closest("form").submit(); return false;' %>
+                    <% end %>
+                    <%= link_to '編集', edit_study_log_path(study_log), class: 'action-button edit-link' %>
+                  </div>
+                <% end %>
+              </div>
+              <div class="study-log-body">
+                <h3 class="subject"><%= study_log.subject.present? ? study_log.subject.name : '科目が設定されていません' %></h3>
+                <h3 class="study-time"><%= "#{(study_log.study_time / 60).floor}時間 #{study_log.study_time % 60}分" %></h3>
+              </div>
+              <div class="study-log-footer">
+                <div class="left-actions">
+                  <%= link_to '💬コメント', study_log_comments_path(study_log), class: 'comment-link' %>
+                  <%= form_with url: study_log_like_path(study_log), method: study_log.liked_by?(current_user) ? :delete : :post, local: true do %>
+                    <a href="#" onclick="this.closest('form').submit(); return false;"
+                       class="like-icon"
+                       style="<%= study_log.liked_by?(current_user) ? 'color: red;' : '' %>">
+                      <%= study_log.liked_by?(current_user) ? '❤️ いいね' : '👍 いいね' %>
+                    </a>
+                  <% end %>
+                  <span class="like-count">(<%= study_log.likes.count %>)</span>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <center>フレンドの記録はありません。</center>
+        <% end %>
+      </div>
+    </div>
+  <!-- フッター -->
+  <div class="footer-menu">
+    <%= link_to '記録する', new_study_log_path, class: 'footer-link' %>
+    <%= link_to 'レポートを見る', reports_path, class: 'footer-link' %>
+    <%= link_to 'フレンド一覧', friendships_path, class: 'footer-link' %>
+    <%= link_to 'ログアウト', logout_path, class: 'footer-link' %>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const tabs = document.querySelectorAll(".tab-link");
+      const panes = document.querySelectorAll(".tab-pane");
+
+      tabs.forEach(tab => {
+        tab.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          // タブの選択状態を切り替え
+          tabs.forEach(t => t.classList.remove("select"));
+          this.classList.add("select");
+
+          // パネルの表示状態を切り替え
+          panes.forEach(pane => pane.classList.remove("active"));
+          const targetId = this.id.replace("-tab", "");
+          document.getElementById(targetId).classList.add("active");
+        });
+      });
+    });
+  </script>
+</body>
